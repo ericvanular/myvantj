@@ -19,9 +19,11 @@ const ErrorComponent = (props) => (
         <span className="font-semibold mr-2 text-left flex-auto">Failed to add payment card</span>
       </div>
     </div>
-    {props.errors.map((error) => (
-      <div className="flex justify-center leading-relaxed text-lg">
-        <b className="mr-2">→</b>
+    {props.errors.map((error, idx) => (
+      <div key={idx} className="flex justify-center leading-relaxed text-lg">
+        <span role="img" className="mr-2 font-bold" aria-label="bullet">
+          →
+        </span>
         {error}
       </div>
     ))}
@@ -77,7 +79,11 @@ export default function AuthorizeNetAccept(props) {
               className="p-2 bg-indigo-700 items-center text-white leading-none rounded-full flex inline-flex"
               role="alert"
             >
-              <span className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">
+              <span
+                role="img"
+                className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3"
+                aria-label="lightning"
+              >
                 ⚡
               </span>
               <span className="font-semibold mr-2 text-left flex-auto">Add a payment method</span>
