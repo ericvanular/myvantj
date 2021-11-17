@@ -1,19 +1,5 @@
 import React from 'react'
-
-const dispatchData = async (payload) => {
-  return new Promise((resolve, reject) =>
-    window.Accept.dispatchData(payload, (response) => {
-      switch (response.messages.resultCode) {
-        case 'Ok':
-          resolve(response)
-          break
-        case 'Error':
-          reject(response)
-          break
-      }
-    })
-  )
-}
+import dispatchData from '@/lib/accept-js'
 
 const AuthorizeNetScriptUrl = {
   Production: 'https://js.authorize.net/v1/Accept.js',
