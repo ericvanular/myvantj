@@ -11,27 +11,28 @@ import axios from 'axios'
 import { useKeycloak } from '@react-keycloak/ssr'
 
 const ErrorComponent = (props) => (
-	<div className="flex flex-col justify-center items-center">
-		<div className="text-black px-6 py-3 border-2 border-black border-solid rounded relative mb-4 bg-red-300">
-			<span className="text-xl inline-block mr-5 align-middle">
-				<i className="fas fa-bell" />
-			</span>
-			<span className="inline-block text-xl align-middle mr-8">
-				Subscription failed.
-			</span>
-		</div>
-		{ props.errors && <div className="text-md text-bold"><b>Failure Cause: </b>{props.errors}</div>}
-		<div className="flex items-center justify-end pt-6 mt-4">
-			<button
-				className="flex items-center justify-center border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
-				onClick={props.onBackButtonClick}
-			>
-				<div className="mx-3">
-					Try Again
-				</div>
-			</button>
-		</div>
-	</div>
+  <div className="flex flex-col justify-center items-center">
+    <div className="text-black px-6 py-3 border-2 border-black border-solid rounded relative mb-4 bg-red-300">
+      <span className="text-xl inline-block mr-5 align-middle">
+        <i className="fas fa-bell" />
+      </span>
+      <span className="inline-block text-xl align-middle mr-8">Subscription failed.</span>
+    </div>
+    {props.errors && (
+      <div className="text-md text-bold">
+        <b>Failure Cause: </b>
+        {props.errors}
+      </div>
+    )}
+    <div className="flex items-center justify-end pt-6 mt-4">
+      <button
+        className="flex items-center justify-center border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
+        onClick={props.onBackButtonClick}
+      >
+        <div className="mx-3">Try Again</div>
+      </button>
+    </div>
+  </div>
 )
 
 export default function FollowModal(props) {
@@ -48,42 +49,44 @@ export default function FollowModal(props) {
   }, [props.username])
 
   const getPlans = async () => {
-    const planData = await API(`http://localhost:5000/app/api/creator/plans/${props.username}`)
+    const planData = await API(`https://app.jetpeak.co/app/api/creator/plans/${props.username}`)
     planData?.plans && setPlan(planData.plans.filter((plan) => plan.name === 'Paid')[0])
   }
 
   const handleFollow = async () => {
-		setStatus('processing')
-		await keycloak.updateToken(300)
-		const response = await fetchWithToken(`http://localhost:5000/app/api/patron/follow/${props.username}`)
-		if (response.result) {
-			setStatus('success')
+    setStatus('processing')
+    await keycloak.updateToken(300)
+    const response = await fetchWithToken(
+      `https://app.jetpeak.co/app/api/patron/follow/${props.username}`
+    )
+    if (response.result) {
+      setStatus('success')
       props.getPosts(1)
       props.getCreator()
       setTimeout(() => {
         props.setOpen(false)
         setStatus('')
       }, 10000)
-		} else {
-			console.log(response)
-			setStatus(['failure', response.error])
-		}
-	}
+    } else {
+      console.log(response)
+      setStatus(['failure', response.error])
+    }
+  }
 
-	const fetchWithToken = async (url) => {
-		const res = await fetch(url, {
-			method: 'POST',
-			headers: {
-				Authorization: `Bearer ${keycloak?.token}`,
-			},
-		})
-		return res.json()
-	}
+  const fetchWithToken = async (url) => {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${keycloak?.token}`,
+      },
+    })
+    return res.json()
+  }
 
-	const resetModalStatus = () => {
-		props.setOpen(false)
-		setStatus('')
-	}
+  const resetModalStatus = () => {
+    props.setOpen(false)
+    setStatus('')
+  }
 
   return (
     <Modal open={props.open} setOpen={props.setOpen}>
@@ -183,13 +186,16 @@ export default function FollowModal(props) {
               )
             ) : (
               <div className="tip-label">
-                {props.username} has no paid subscription plans yet! Check out their public posts for now.
+                {props.username} has no paid subscription plans yet! Check out their public posts
+                for now.
               </div>
             )}
           </div>
         </>
       ) : (
-        <RegisterForm keycloak={keycloak} username={props.username} />
+        <RegisterForm
+          signUpSubtext={`To see ${props.username}'s posts, chat with them, and more`}
+        />
       )}
     </Modal>
   )

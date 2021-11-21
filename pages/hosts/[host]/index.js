@@ -91,7 +91,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
   const getCreator = () => {
     const options = {
       method: 'get',
-      url: `http://localhost:5000/app/api/creator/${host}`,
+      url: `https://app.jetpeak.co/app/api/creator/${host}`,
     }
     API(options)
       .then((data) => setCreator(data.creator))
@@ -102,8 +102,8 @@ export default function Home({ host, id, username, description, avatar_url, bann
     const options = {
       method: 'get',
       url: username
-        ? `/app/api/creator/posts/${username}?page=${page}`
-        : `/app/api/creator/posts?page=${page}`,
+        ? `https://app.jetpeak.co/app/api/creator/posts/${username}?page=${page}`
+        : `https://app.jetpeak.co/app/api/creator/posts?page=${page}`,
     }
     API(options)
       .then((data) => {
@@ -115,20 +115,20 @@ export default function Home({ host, id, username, description, avatar_url, bann
   const getPaymentMethods = () => {
     const options = {
       method: 'get',
-      url: '/api/subscription/payment_method',
+      url: 'https://app.jetpeak.co/api/subscription/payment_method',
     }
     API(options).then((data) => setPaymentMethods(data.payment_methods))
   }
 
   const { data: paymentMethodsData, error: paymentMethodsError } = useSWR(
     keycloak?.token
-      ? [`http://localhost:5000/api/subscription/payment_method`, keycloak?.token]
+      ? [`https://app.jetpeak.co/api/subscription/payment_method`, keycloak?.token]
       : null,
     fetchWithToken
   )
 
   const { data: postsData, error: postsError } = useSWR(
-    [`http://localhost:5000/app/api/creator/posts/${host.split('.')[0]}`, keycloak?.token],
+    [`https://app.jetpeak.co/app/api/creator/posts/${host.split('.')[0]}`, keycloak?.token],
     fetchWithToken
   )
 
