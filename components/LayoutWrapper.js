@@ -23,7 +23,7 @@ const LayoutWrapper = ({ children }) => {
     return res.json()
   }
 
-  const { data: creator, error } = useSWR(
+  const { data, error } = useSWR(
     `https://app.jetpeak.co/app/api/creator/${router?.query.host?.split('.')[0]}`,
     fetcher
   )
@@ -37,22 +37,19 @@ const LayoutWrapper = ({ children }) => {
             <Link href="/" aria-label="Tailwind CSS Blog">
               <div className="flex items-center justify-between">
                 <div className="mr-3">
-                  {creator?.avatar_url ? (
+                  {/* data?.creator?.banner_url ? (
                     <img
-                      className="h-16 w-20 rounded-full object-cover object-center"
-                      src={creator?.avatar_url}
-                      alt={creator?.username}
+                      className="hidden sm:block h-20 w-48 shadow-lg rounded object-cover object-center"
+                      src={data?.creator?.banner_url}
+                      alt={data?.creator?.username}
                     />
-                  ) : (
-                    <img
-                      className="mx-auto h-12 w-auto"
-                      src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-                      alt="Workflow"
-                    />
-                  )}
+                  ) : ( 
+                  */}
                 </div>
                 {router?.query?.host ? (
-                  <div className="hidden text-2xl font-semibold sm:block">{router?.query.host}</div>
+                  <div className="text-2xl font-semibold dark:text-gray-100 text-indigo-900">
+                    {router?.query.host}
+                  </div>
                 ) : (
                   siteMetadata.headerTitle
                 )}
@@ -75,7 +72,7 @@ const LayoutWrapper = ({ children }) => {
             */}
             <ThemeSwitch />
             <Navatar setShowRegisterModal={setShowRegisterModal} />
-            <MobileNav />
+            {/*<MobileNav />*/}
           </div>
         </header>
         <main className="mb-auto">{children}</main>

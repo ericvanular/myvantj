@@ -165,31 +165,46 @@ export default function Home({ host, id, username, description, avatar_url, bann
       />
       <div className="divide-y divide-gray-200 dark:divide-gray-700">
         <div className="pb-8 space-y-2 md:space-y-5">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            {username}
-          </h1>
-          <p className="text-lg leading-7 text-gray-500 dark:text-gray-400">{description}</p>
+          <div className="flex flex-row items-center">
+            {avatar_url && (
+              <img
+                className="h-36 w-36 shadow-lg rounded-full object-cover object-center m-3 border border-indigo-900 dark:border-indigo-100"
+                src={avatar_url}
+                alt={username}
+              />
+            )}
+            <div className="flex flex-col h-full items-start justify-between">
+              <h1 className="font-semibold text-gray-900 dark:text-gray-100 text-6xl pl-4">
+                {username}
+              </h1>
+              {description && (
+                <p className="hidden sm:block text-md text-gray-500 dark:text-gray-400 pl-4 pt-4">
+                  {description}
+                </p>
+              )}
+            </div>
+          </div>
           <div className="flex flex-row items-start justify-start">
             <button
               onClick={() => setShowFollowModal(true)}
-              className="bg-transparent hover:bg-indigo-600 text-indigo-700 font-semibold hover:text-white py-2 px-4 mx-2 border border-indigo-800 hover:border-transparent rounded"
+              className="bg-transparent hover:bg-indigo-600 text-indigo-700 font-semibold hover:text-white py-2 px-4 mx-2 border border-indigo-800 hover:border-transparent rounded dark:text-gray-100 dark:border-indigo-100"
             >
               Follow
             </button>
             <button
               onClick={() => setShowTipModal(true)}
-              className="bg-transparent hover:bg-green-600 text-indigo-700 font-semibold hover:text-white py-2 px-4 mx-2 border border-green-800 hover:border-transparent rounded"
+              className="bg-transparent hover:bg-green-600 text-indigo-700 font-semibold hover:text-white py-2 px-4 mx-2 border border-green-800 hover:border-transparent rounded dark:text-gray-100 dark:border-indigo-100"
             >
               Tip
             </button>
             {/*
-                        <Link
-                            href={`/chat`}
-                            className="bg-transparent hover:bg-pink-600 text-indigo-700 font-semibold hover:text-white py-2 px-4 mx-2 border border-pink-800 hover:border-transparent rounded"
-                        >
-                            Chat
-                        </Link>
-                        */}
+												<Link
+														href={`/chat`}
+														className="bg-transparent hover:bg-pink-600 text-indigo-700 font-semibold hover:text-white py-2 px-4 mx-2 border border-pink-800 hover:border-transparent rounded"
+												>
+														Chat
+												</Link>
+												*/}
           </div>
         </div>
         <PostGrid posts={postsData?.posts} creatorId={id} setShow={setShowFollowModal} />

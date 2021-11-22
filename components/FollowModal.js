@@ -94,7 +94,7 @@ export default function FollowModal(props) {
         <>
           {/*header*/}
           <div className="flex items-center justify-between p-4 border-b border-solid border-blueGray-200 rounded-t">
-            <h2 className="text-3xl font-semibold">Follow {props.username}?</h2>
+            <h2 className="text-3xl text-black font-semibold">Follow {props.username}?</h2>
             <button
               className="p-1 ml-auto bg-transparent border-0 text-black float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
               onClick={resetModalStatus}
