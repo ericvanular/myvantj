@@ -174,7 +174,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
               />
             )}
             <div className="flex flex-col h-full items-start justify-between">
-              <h1 className="font-semibold text-gray-900 dark:text-gray-100 text-6xl pl-4">
+              <h1 className="font-semibold text-gray-900 dark:text-gray-100 text-4xl sm:text-6xl pl-4">
                 {username}
               </h1>
               {description && (

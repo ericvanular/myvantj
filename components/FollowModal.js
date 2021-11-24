@@ -185,7 +185,7 @@ export default function FollowModal(props) {
                 <AuthorizeNetAccept getPaymentMethods={props.getPaymentMethods} />
               )
             ) : (
-              <div className="tip-label">
+              <div className="tip-label text-black">
                 {props.username} has no paid subscription plans yet! Check out their public posts
                 for now.
               </div>

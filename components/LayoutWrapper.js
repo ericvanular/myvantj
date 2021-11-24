@@ -47,7 +47,7 @@ const LayoutWrapper = ({ children }) => {
                   */}
                 </div>
                 {router?.query?.host ? (
-                  <div className="text-2xl font-semibold dark:text-gray-100 text-indigo-900">
+                  <div className="text-lg sm:text-2xl font-semibold dark:text-gray-100 text-indigo-900 hover:text-black">
                     {router?.query.host}
                   </div>
                 ) : (
