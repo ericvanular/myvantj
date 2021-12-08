@@ -49,7 +49,7 @@ export default function FollowModal(props) {
   }, [props.username])
 
   const getPlans = async () => {
-    const planData = await API(`https://app.jetpeak.co/app/api/creator/plans/${props.username}`)
+    const planData = await API(`https://app.jetpeak.co/api/creator/plans/${props.username}`)
     planData?.plans && setPlan(planData.plans.filter((plan) => plan.name === 'Paid')[0])
   }
 
@@ -57,7 +57,7 @@ export default function FollowModal(props) {
     setStatus('processing')
     await keycloak.updateToken(300)
     const response = await fetchWithToken(
-      `https://app.jetpeak.co/app/api/patron/follow/${props.username}`
+      `https://app.jetpeak.co/api/patron/follow/${props.username}`
     )
     if (response.result) {
       setStatus('success')

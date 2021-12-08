@@ -17,7 +17,7 @@ const ErrorComponent = (props) => (
         {props.errors}
       </div>
     )}
-    <div className="flex items-center justify-end pt-6 mt-4">
+    <div className="flex items-center justify-end pt-6">
       <button
         className="flex items-center justify-center border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
         onClick={props.onBackButtonClick}
@@ -37,6 +37,11 @@ export default function RegisterForm(props) {
 
   const registerAccount = async () => {
     setStatus('processing')
+    const validateEmailResponse = await validateEmail()
+    if (!validateEmailResponse.result) {
+      setStatus(['failure', validateEmailResponse.message])
+      return
+    }
     const response = await fetch('http://localhost:5000/api/auth/register', {
       method: 'POST',
       headers: {
@@ -55,6 +60,18 @@ export default function RegisterForm(props) {
       console.log(data)
       setStatus(['failure', data.error])
     }
+  }
+
+  const validateEmail = async () => {
+    const res = await fetch('http://localhost:5000/api/auth/validate/email', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    })
+    return res.json()
   }
 
   return (

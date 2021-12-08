@@ -21,7 +21,7 @@ const Navatar = (props) => {
 
   const { data, error } = useSWR(
     keycloak?.tokenParsed?.preferred_username
-      ? `https://app.jetpeak.co/app/api/creator/${keycloak?.tokenParsed?.preferred_username}`
+      ? `https://app.jetpeak.co/api/creator/${keycloak?.tokenParsed?.preferred_username}`
       : null,
     fetcher
   )
@@ -40,7 +40,9 @@ const Navatar = (props) => {
               />
             ) : (
               <div className="h-12 w-12 text-xl bg-indigo-800 text-white rounded-full font-semibold flex items-center justify-center">
-                {data?.creator?.email[0].toUpperCase()}
+                {data?.creator?.username
+                  ? data?.creator?.username[0].toUpperCase()
+                  : data?.creator?.email[0].toUpperCase()}
               </div>
             )
           ) : (

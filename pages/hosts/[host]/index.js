@@ -23,8 +23,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const host = context.params.host
-  //const postsData = await API(`https://app.jetpeak.co/app/api/creator/posts/eric`)
-  const profileData = await API(`https://app.jetpeak.co/app/api/creator/${host.split('.')[0]}`)
+  //const postsData = await API(`https://app.jetpeak.co/api/creator/posts/eric`)
+  const profileData = await API(`https://app.jetpeak.co/api/creator/${host.split('.')[0]}`)
 
   if (!profileData.result) {
     return {
@@ -64,7 +64,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
 
   /*
   const { data, error, isValidating } = useSWR(
-    `http://localhost:5000/app/api/creator/posts/${host.split('.')[0]}`,
+    `http://localhost:5000/api/creator/posts/${host.split('.')[0]}`,
     (url) =>
       fetch(url, {
         headers: {
@@ -91,7 +91,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
   const getCreator = () => {
     const options = {
       method: 'get',
-      url: `https://app.jetpeak.co/app/api/creator/${host}`,
+      url: `https://app.jetpeak.co/api/creator/${host}`,
     }
     API(options)
       .then((data) => setCreator(data.creator))
@@ -102,8 +102,8 @@ export default function Home({ host, id, username, description, avatar_url, bann
     const options = {
       method: 'get',
       url: username
-        ? `https://app.jetpeak.co/app/api/creator/posts/${username}?page=${page}`
-        : `https://app.jetpeak.co/app/api/creator/posts?page=${page}`,
+        ? `https://app.jetpeak.co/api/creator/posts/${username}?page=${page}`
+        : `https://app.jetpeak.co/api/creator/posts?page=${page}`,
     }
     API(options)
       .then((data) => {
@@ -128,7 +128,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
   )
 
   const { data: postsData, error: postsError } = useSWR(
-    [`https://app.jetpeak.co/app/api/creator/posts/${host.split('.')[0]}`, keycloak?.token],
+    [`https://app.jetpeak.co/api/creator/posts/${host.split('.')[0]}`, keycloak?.token],
     fetchWithToken
   )
 

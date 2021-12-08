@@ -24,7 +24,7 @@ const LayoutWrapper = ({ children }) => {
   }
 
   const { data, error } = useSWR(
-    `https://app.jetpeak.co/app/api/creator/${router?.query.host?.split('.')[0]}`,
+    `https://app.jetpeak.co/api/creator/${router?.query.host?.split('.')[0]}`,
     fetcher
   )
 

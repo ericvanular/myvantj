@@ -45,7 +45,7 @@ export default function TipModal(props) {
     setStatus('processing')
     await keycloak.updateToken(300)
     const response = await fetchWithToken(
-      `https://app.jetpeak.co/app/api/patron/tip/${props.username}`,
+      `https://app.jetpeak.co/api/patron/tip/${props.username}`,
       amount
     )
     if (response.result) {
