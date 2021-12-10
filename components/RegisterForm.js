@@ -9,12 +9,11 @@ const ErrorComponent = (props) => (
       <span className="text-xl inline-block mr-5 align-middle">
         <i className="fas fa-bell" />
       </span>
-      <span className="inline-block text-xl align-middle mr-8">Registration failed.</span>
+      <span className="inline-block text-xl align-middle mr-8">Registration Failed</span>
     </div>
     {props.errors && (
       <div className="text-md text-bold">
-        <b>Failure Cause: </b>
-        {props.errors}
+        <b>{props.errors}</b>
       </div>
     )}
     <div className="flex items-center justify-end pt-6">
@@ -37,41 +36,24 @@ export default function RegisterForm(props) {
 
   const registerAccount = async () => {
     setStatus('processing')
-    const validateEmailResponse = await validateEmail()
-    if (!validateEmailResponse.result) {
-      setStatus(['failure', validateEmailResponse.message])
-      return
-    }
-    const response = await fetch('http://localhost:5000/api/auth/register', {
+    const response = await fetch('https://app.jetpeak.co/api/auth/register', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password, accountType: 'Fan' }),
+      body: JSON.stringify({ email, password, accountType: 'Creator' }),
     })
     const data = await response.json()
-    if (data.result) {
+    if (data.error) {
+      setStatus(['failure', data.error])
+      return
+    } else {
       setStatus('success')
       setTimeout(() => {
         window.location.href = keycloak.createLoginUrl()
-      }, 2500)
-    } else {
-      console.log(data)
-      setStatus(['failure', data.error])
+      }, 3000)
     }
-  }
-
-  const validateEmail = async () => {
-    const res = await fetch('http://localhost:5000/api/auth/validate/email', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email }),
-    })
-    return res.json()
   }
 
   return (
