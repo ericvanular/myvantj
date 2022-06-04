@@ -9,7 +9,7 @@ const PostGrid = ({ posts, creatorId, setShow }) => {
   const [copied, setCopied] = useState(false)
 
   return (
-    <div className="flex flex-wrap -m-4">
+    <div className={`flex flex-wrap -m-4 ${!posts?.length ? 'hidden' : ''}`}>
       {!posts && <div className="leading-relaxed m-2">Loading posts...</div>}
       {!posts?.length ? (
         <div className="leading-relaxed m-2">No posts found.</div>

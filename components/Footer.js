@@ -16,7 +16,7 @@ export default function Footer() {
           <SocialIcon kind="twitter" href={siteMetadata.twitter} size="6" />
         </div>
         */}
-        <div className="flex mt-2 mb-8 space-x-2 text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex mt-2 mb-8 space-x-2 text-sm text-gray-300 dark:text-gray-700">
           <Link href="https://jetpeak.co">Powered by CreatorBase</Link>
         </div>
       </div>

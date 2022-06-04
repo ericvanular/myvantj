@@ -179,7 +179,7 @@ export default function FollowModal(props) {
                       </div>
                     </button>
                   </div>
-                  <DisclaimerMoR creator={props.username} color="gray" />
+                  {/* <DisclaimerMoR creator={props.username} color="gray" /> */}
                 </>
               ) : (
                 <AuthorizeNetAccept getPaymentMethods={props.getPaymentMethods} />

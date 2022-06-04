@@ -43,9 +43,8 @@ const DisclaimerMoR = ({ creator, color }) => {
       >
         <div>
           <div className="text-white p-3">
-            JetPeak Ltd is the Merchant of Record for card payment transactions on this site.
-            JetPeak Ltd will appear on your payment card statement. Any disputes will be settled
-            with JetPeak.
+            JetPeak Ltd is the Merchant of Record for transactions on this site. JetPeak Ltd will
+            appear on your payment card statement. Any disputes will be settled with JetPeak.
           </div>
         </div>
       </div>
