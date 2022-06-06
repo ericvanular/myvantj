@@ -73,7 +73,7 @@ export default function TipModal(props) {
     setStatus('unpaid')
     await keycloak.updateToken(300)
     const response = await fetchWithToken(
-      `https://app.jetpeak.co/api/patron/tip/${props.username}`, // `http://localhost:5000/api/patron/btctip/${props.username}`,
+      `${process.env.NEXT_PUBLIC_API}/api/patron/btctip/${props.username}`,
       amount
     )
     if (response.data?.uri) {

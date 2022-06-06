@@ -129,7 +129,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
   )
 
   const { data: postsData, error: postsError } = useSWR(
-    [`https://app.jetpeak.co/api/creator/posts/${host.split('.')[0]}`, keycloak?.token],
+    [`${process.env.NEXT_PUBLIC_API}/api/creator/posts/${host.split('.')[0]}`, keycloak?.token],
     fetchWithToken
   )
 
