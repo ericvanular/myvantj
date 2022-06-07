@@ -123,68 +123,68 @@ export default function FollowModal(props) {
             ) : status[0] === 'failure' ? (
               <ErrorComponent onBackButtonClick={() => setStatus('')} errors={status[1]} />
             ) : plan ? (
-              props.paymentMethods?.length ? (
-                <>
-                  <div className="rounded overflow-hidden shadow-lg">
-                    <img
-                      className="w-full max-h-36 object-cover object-center"
-                      src={
-                        props.banner_url ||
-                        'https://f000.backblazeb2.com/file/jetpeak/ef480b01-fac6-4137-bfac-f47e73df1f8b/9919f630fcb74c5492a48af734cca30f.jpg'
-                      }
-                      alt="Banner"
-                    />
-                    <div className="px-6 py-4">
-                      <div className="font-bold text-xl mb-2">Subscription Benefits</div>
-                      <p className="text-md text-gray-600 flex items-center my-3">
-                        <svg
-                          className="fill-current text-gray-500 w-5 h-5 mr-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
-                        </svg>
-                        Full access to {props.username}'s Premium Content
-                      </p>
-                      <p className="text-md text-gray-600 flex items-center mb-3">
-                        <svg
-                          className="fill-current text-gray-500 w-5 h-5 mr-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
-                        </svg>
-                        Direct message with {props.username}
-                      </p>
-                      <p className="text-md text-gray-600 flex items-center">
-                        <svg
-                          className="fill-current text-gray-500 w-5 h-5 mr-2"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 20 20"
-                        >
-                          <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
-                        </svg>
-                        Cancel your subscription at any time
-                      </p>
+              // props.paymentMethods?.length ? (
+              <>
+                <div className="rounded overflow-hidden shadow-lg">
+                  <img
+                    className="w-full max-h-36 object-cover object-center"
+                    src={
+                      props.banner_url ||
+                      'https://f000.backblazeb2.com/file/jetpeak/ef480b01-fac6-4137-bfac-f47e73df1f8b/9919f630fcb74c5492a48af734cca30f.jpg'
+                    }
+                    alt="Banner"
+                  />
+                  <div className="px-6 py-4">
+                    <div className="font-bold text-xl mb-2">Subscription Benefits</div>
+                    <p className="text-md text-gray-600 flex items-center my-3">
+                      <svg
+                        className="fill-current text-gray-500 w-5 h-5 mr-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
+                      </svg>
+                      Full access to {props.username}'s Premium Content
+                    </p>
+                    <p className="text-md text-gray-600 flex items-center mb-3">
+                      <svg
+                        className="fill-current text-gray-500 w-5 h-5 mr-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
+                      </svg>
+                      Direct message with {props.username}
+                    </p>
+                    <p className="text-md text-gray-600 flex items-center">
+                      <svg
+                        className="fill-current text-gray-500 w-5 h-5 mr-2"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M4 8V6a6 6 0 1 1 12 0v2h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8c0-1.1.9-2 2-2h1zm5 6.73V17h2v-2.27a2 2 0 1 0-2 0zM7 6v2h6V6a3 3 0 0 0-6 0z" />
+                      </svg>
+                      Cancel your subscription at any time
+                    </p>
+                  </div>
+                </div>
+                {/*footer*/}
+                <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
+                  <button
+                    className="flex items-center justify-center border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
+                    onClick={() => handleFollow()}
+                  >
+                    <div className="mx-3">
+                      Follow {props.username} for ${plan.amount} / month
                     </div>
-                  </div>
-                  {/*footer*/}
-                  <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
-                    <button
-                      className="flex items-center justify-center border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
-                      onClick={() => handleFollow()}
-                    >
-                      <div className="mx-3">
-                        Follow {props.username} for ${plan.amount} / month
-                      </div>
-                    </button>
-                  </div>
-                  {/* <DisclaimerMoR creator={props.username} color="gray" /> */}
-                </>
-              ) : (
-                <AuthorizeNetAccept getPaymentMethods={props.getPaymentMethods} />
-              )
+                  </button>
+                </div>
+                {/* <DisclaimerMoR creator={props.username} color="gray" /> */}
+              </>
             ) : (
+              // ) : (
+              //   <AuthorizeNetAccept getPaymentMethods={props.getPaymentMethods} />
+              // )
               <div className="tip-label text-black">
                 {props.username} has no paid subscription plans yet! Check out their public posts
                 for now.

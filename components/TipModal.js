@@ -127,138 +127,144 @@ export default function TipModal(props) {
           </div>
           {/*body*/}
           <div className="relative p-6 flex-auto">
-            {status === 'unpaid' ? (
-              <div className="flex justify-center items-center flex-col">
-                <h2 className="mb-2 dark:text-gray-900">
-                  Creating checkout details for you to tip {props.username}...
-                </h2>
-              </div>
-            ) : status === 'processing' ? (
-              <div className="flex justify-center items-center flex-col">
-                {/*<Spinner
+            {
+              status === 'unpaid' ? (
+                <div className="flex justify-center items-center flex-col">
+                  <h2 className="mb-2 dark:text-gray-900">
+                    Creating checkout details for you to tip {props.username}...
+                  </h2>
+                </div>
+              ) : status === 'processing' ? (
+                <div className="flex justify-center items-center flex-col">
+                  {/*<Spinner
 								animation="border"
 								variant="success"
 								style={{ margin: '2rem', height: '100px', width: '100px', fontSize: '2.5rem' }}
 								/>*/}
-                <h2 className="mb-2 dark:text-gray-900">Sending your tip to {props.username}...</h2>
-              </div>
-            ) : status === 'paid' ? (
-              <div className="flex justify-center items-center flex-col">
-                <Image
-                  src={'/static/images/wallet.png'}
-                  width="100px"
-                  height="100px"
-                  alt="wallet"
-                  className="p-3"
-                />
-                <h2 className="m-4 text-xl">You sent a tip to {props.username}!</h2>
-              </div>
-            ) : status[0] === 'failure' ? (
-              <ErrorComponent onBackButtonClick={() => setStatus('')} errors={status[1]} />
-            ) : status === 'checkout' ? (
-              <div className="flex justify-center items-center flex-col">
-                <label
-                  onClick={() => setToggle(!toggle)}
-                  htmlFor="large-toggle"
-                  className="inline-flex relative items-center cursor-pointer mb-3"
-                >
-                  <input
-                    type="checkbox"
-                    value=""
-                    id="checked-toggle"
-                    className="sr-only peer"
-                    checked={toggle}
+                  <h2 className="mb-2 dark:text-gray-900">
+                    Sending your tip to {props.username}...
+                  </h2>
+                </div>
+              ) : status === 'paid' ? (
+                <div className="flex justify-center items-center flex-col">
+                  <Image
+                    src={'/static/images/wallet.png'}
+                    width="100px"
+                    height="100px"
+                    alt="wallet"
+                    className="p-3"
                   />
-                  <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                  <span className="ml-3 text-sm font-medium text-gray-900">Lightning ⚡</span>
-                </label>
-                <div className="font-bold text-lg dark:text-gray-900">
-                  {(charge.amount * 1e-8).toFixed(8)} BTC
+                  <h2 className="m-4 text-xl">You sent a tip to {props.username}!</h2>
                 </div>
-                <div className="dark:text-gray-900">
-                  {' '}
-                  ≈ ${charge.source_fiat_value.toFixed(2) + ' ' + charge.currency}
-                </div>
-                <div className="flex items-center justify-end p-4">
-                  <a
-                    href={
-                      toggle
-                        ? 'lightning:' + charge.lightning_invoice.payreq.toUpperCase()
-                        : charge.uri.split('&lightning')[0]
+              ) : status[0] === 'failure' ? (
+                <ErrorComponent onBackButtonClick={() => setStatus('')} errors={status[1]} />
+              ) : status === 'checkout' ? (
+                <div className="flex justify-center items-center flex-col">
+                  <label
+                    onClick={() => setToggle(!toggle)}
+                    htmlFor="large-toggle"
+                    className="inline-flex relative items-center cursor-pointer mb-3"
+                  >
+                    <input
+                      type="checkbox"
+                      value=""
+                      id="checked-toggle"
+                      className="sr-only peer"
+                      checked={toggle}
+                    />
+                    <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                    <span className="ml-3 text-sm font-medium text-gray-900">Lightning ⚡</span>
+                  </label>
+                  <div className="font-bold text-lg dark:text-gray-900">
+                    {(charge.amount * 1e-8).toFixed(8)} BTC
+                  </div>
+                  <div className="dark:text-gray-900">
+                    {' '}
+                    ≈ ${charge.source_fiat_value.toFixed(2) + ' ' + charge.currency}
+                  </div>
+                  <div className="flex items-center justify-end p-4">
+                    <a
+                      href={
+                        toggle
+                          ? 'lightning:' + charge.lightning_invoice.payreq.toUpperCase()
+                          : charge.uri.split('&lightning')[0]
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center border border-2 border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-lg hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
+                    >
+                      <div className="mx-3">Open In {toggle && '⚡'} Wallet</div>
+                    </a>
+                  </div>
+                  <QRCodeSVG
+                    value={
+                      toggle ? charge.uri.split('&lightning')[1] : charge.uri.split('&lightning')[0]
                     }
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center border border-2 border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-lg hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
-                  >
-                    <div className="mx-3">Open In {toggle && '⚡'} Wallet</div>
-                  </a>
-                </div>
-                <QRCodeSVG
-                  value={
-                    toggle ? charge.uri.split('&lightning')[1] : charge.uri.split('&lightning')[0]
-                  }
-                  size={200}
-                  bgColor={'#feffff'}
-                  fgColor={'#000000'}
-                  level={'L'}
-                  includeMargin={true}
-                />
-                <div
-                  className="cursor-pointer mt-4 flex justify-center items-center flex-col"
-                  onClick={() => {
-                    navigator.clipboard.writeText(
-                      toggle ? charge.lightning_invoice.payreq.toUpperCase() : charge.address
-                    )
-                  }}
-                >
-                  <div className="font-semibold text-md dark:text-gray-900">
-                    {toggle ? 'Lightning Address:' : 'BTC Address:'}
-                  </div>
-                  <div className="text-sm dark:text-gray-900">
-                    {toggle
-                      ? charge.lightning_invoice.payreq.substr(0, 30).toUpperCase() + '...'
-                      : charge.address}
-                  </div>
-                </div>
-              </div>
-            ) : props.paymentMethods?.length ? (
-              <form
-                className="flex flex-col justify-center items-center"
-                onSubmit={(e) => handleTip(tipAmount)}
-              >
-                <label
-                  className="block text-indigo-900 text-lg font-semibold mb-4"
-                  htmlFor="username"
-                >
-                  How much would you like to tip?
-                </label>
-                <div className="flex justify-center items-center">
-                  <span className="font-semibold text-2xl mr-3">$</span>
-                  <input
-                    value={tipAmount}
-                    type="number"
-                    name="amount"
-                    min="1"
-                    step="any"
-                    max="200"
-                    placeholder="50.00"
-                    className="shadow appearance-none border w-40 rounded py-2 px-3 text-indigo-800 leading-tight focus:outline-none focus:shadow-outline"
-                    onChange={(e) => setTipAmount(parseFloat(e.target.value))}
+                    size={200}
+                    bgColor={'#feffff'}
+                    fgColor={'#000000'}
+                    level={'L'}
+                    includeMargin={true}
                   />
-                  <span className="text-xl ml-3">USD</span>
-                </div>
-                <div className="flex items-center justify-end pt-6 mt-4">
-                  <button
-                    className="flex items-center justify-center border border-2 border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-lg hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
-                    type="submit"
+                  <div
+                    className="cursor-pointer mt-4 flex justify-center items-center flex-col"
+                    onClick={() => {
+                      navigator.clipboard.writeText(
+                        toggle ? charge.lightning_invoice.payreq.toUpperCase() : charge.address
+                      )
+                    }}
                   >
-                    <div className="mx-3">Checkout</div>
-                  </button>
+                    <div className="font-semibold text-md dark:text-gray-900">
+                      {toggle ? 'Lightning Address:' : 'BTC Address:'}
+                    </div>
+                    <div className="text-sm dark:text-gray-900">
+                      {toggle
+                        ? charge.lightning_invoice.payreq.substr(0, 30).toUpperCase() + '...'
+                        : charge.address}
+                    </div>
+                  </div>
                 </div>
-              </form>
-            ) : (
-              <AuthorizeNetAccept getPaymentMethods={props.getPaymentMethods} />
-            )}
+              ) : (
+                // props.paymentMethods?.length ? (
+                <form
+                  className="flex flex-col justify-center items-center"
+                  onSubmit={(e) => handleTip(tipAmount)}
+                >
+                  <label
+                    className="block text-indigo-900 text-lg font-semibold mb-4"
+                    htmlFor="username"
+                  >
+                    How much would you like to tip?
+                  </label>
+                  <div className="flex justify-center items-center">
+                    <span className="font-semibold text-2xl mr-3">$</span>
+                    <input
+                      value={tipAmount}
+                      type="number"
+                      name="amount"
+                      min="1"
+                      step="any"
+                      max="200"
+                      placeholder="50.00"
+                      className="shadow appearance-none border w-40 rounded py-2 px-3 text-indigo-800 leading-tight focus:outline-none focus:shadow-outline"
+                      onChange={(e) => setTipAmount(parseFloat(e.target.value))}
+                    />
+                    <span className="text-xl ml-3">USD</span>
+                  </div>
+                  <div className="flex items-center justify-end pt-6 mt-4">
+                    <button
+                      className="flex items-center justify-center border border-2 border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-lg hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
+                      type="submit"
+                    >
+                      <div className="mx-3">Checkout</div>
+                    </button>
+                  </div>
+                </form>
+              )
+              // ) : (
+              //   <AuthorizeNetAccept getPaymentMethods={props.getPaymentMethods} />
+              // )}
+            }
           </div>
         </>
       ) : (
