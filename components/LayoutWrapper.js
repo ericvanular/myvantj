@@ -47,7 +47,7 @@ const LayoutWrapper = ({ children }) => {
                   */}
                 </div>
                 {router?.query?.host ? (
-                  <div className="text-lg sm:text-2xl font-semibold dark:text-gray-100 text-indigo-900 hover:text-black">
+                  <div className="hidden md:block text-lg sm:text-2xl font-semibold dark:text-gray-100 text-indigo-900 hover:text-black">
                     {router?.query.host}
                   </div>
                 ) : (
@@ -72,7 +72,7 @@ const LayoutWrapper = ({ children }) => {
             */}
             <ThemeSwitch />
             <Navatar setShowRegisterModal={setShowRegisterModal} />
-            {/*<MobileNav />*/}
+            {/* <MobileNav /> */}
           </div>
         </header>
         <main className="mb-auto">{children}</main>
