@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Modal from './Modal'
 import API from '@/lib/api'
+import generateFileUrl from '@/lib/utils/generateFileUrl'
 import AuthorizeNetAccept from '@/components/payments/AuthorizeNetAccept'
 import DisclaimerMoR from '@/components/DisclaimerMoR'
 import RegisterForm from './RegisterForm'
@@ -49,7 +50,7 @@ export default function FollowModal(props) {
   }, [props.username])
 
   const getPlans = async () => {
-    const planData = await API(`https://app.jetpeak.co/api/creator/plans/${props.username}`)
+    const planData = await API(`${process.env.NEXT_PUBLIC_API}/api/creator/plans/${props.username}`)
     planData?.plans && setPlan(planData.plans.filter((plan) => plan.name === 'Paid')[0])
   }
 
@@ -57,7 +58,7 @@ export default function FollowModal(props) {
     setStatus('processing')
     await keycloak.updateToken(300)
     const response = await fetchWithToken(
-      `https://app.jetpeak.co/api/patron/follow/${props.username}`
+      `${process.env.NEXT_PUBLIC_API}/api/patron/follow/${props.username}`
     )
     if (response.result) {
       setStatus('success')
@@ -126,14 +127,13 @@ export default function FollowModal(props) {
               // props.paymentMethods?.length ? (
               <>
                 <div className="rounded overflow-hidden shadow-lg">
-                  <img
-                    className="w-full max-h-36 object-cover object-center"
-                    src={
-                      props.banner_url ||
-                      'https://f000.backblazeb2.com/file/jetpeak/ef480b01-fac6-4137-bfac-f47e73df1f8b/9919f630fcb74c5492a48af734cca30f.jpg'
-                    }
-                    alt="Banner"
-                  />
+                  {props.banner_url && (
+                    <img
+                      className="w-full max-h-36 object-cover object-center"
+                      src={props.banner_url}
+                      alt="Banner"
+                    />
+                  )}
                   <div className="px-6 py-4">
                     <div className="font-bold text-xl mb-2">Subscription Benefits</div>
                     <p className="text-md text-gray-600 flex items-center my-3">

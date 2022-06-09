@@ -21,7 +21,7 @@ const Navatar = (props) => {
 
   const { data, error } = useSWR(
     keycloak?.tokenParsed?.preferred_username
-      ? `https://app.jetpeak.co/api/creator/${keycloak?.tokenParsed?.preferred_username}`
+      ? `${process.env.NEXT_PUBLIC_API}/api/creator/${keycloak?.tokenParsed?.preferred_username}`
       : null,
     fetcher
   )

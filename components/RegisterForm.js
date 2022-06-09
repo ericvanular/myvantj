@@ -36,7 +36,7 @@ export default function RegisterForm(props) {
 
   const registerAccount = async () => {
     setStatus('processing')
-    const response = await fetch('https://app.jetpeak.co/api/auth/register', {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/auth/register`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

@@ -24,8 +24,8 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const host = context.params.host
-  //const postsData = await API(`https://app.jetpeak.co/api/creator/posts/eric`)
-  const profileData = await API(`https://app.jetpeak.co/api/creator/${host.split('.')[0]}`)
+  //const postsData = await API(`${process.env.NEXT_PUBLIC_API}/api/creator/posts/eric`)
+  const profileData = await API(`${process.env.NEXT_PUBLIC_API}/api/creator/${host.split('.')[0]}`)
 
   if (!profileData.result) {
     return {
@@ -92,7 +92,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
   const getCreator = () => {
     const options = {
       method: 'get',
-      url: `https://app.jetpeak.co/api/creator/${host}`,
+      url: `${process.env.NEXT_PUBLIC_API}/api/creator/${host}`,
     }
     API(options)
       .then((data) => setCreator(data.creator))
@@ -103,8 +103,8 @@ export default function Home({ host, id, username, description, avatar_url, bann
     const options = {
       method: 'get',
       url: username
-        ? `https://app.jetpeak.co/api/creator/posts/${username}?page=${page}`
-        : `https://app.jetpeak.co/api/creator/posts?page=${page}`,
+        ? `${process.env.NEXT_PUBLIC_API}/api/creator/posts/${username}?page=${page}`
+        : `${process.env.NEXT_PUBLIC_API}/api/creator/posts?page=${page}`,
     }
     API(options)
       .then((data) => {
@@ -116,14 +116,14 @@ export default function Home({ host, id, username, description, avatar_url, bann
   const getPaymentMethods = () => {
     const options = {
       method: 'get',
-      url: 'https://app.jetpeak.co/api/subscription/payment_method',
+      url: `${process.env.NEXT_PUBLIC_API}/api/subscription/payment_method`,
     }
     API(options).then((data) => setPaymentMethods(data.payment_methods))
   }
 
   const { data: paymentMethodsData, error: paymentMethodsError } = useSWR(
     keycloak?.token
-      ? [`https://app.jetpeak.co/api/subscription/payment_method`, keycloak?.token]
+      ? [`${process.env.NEXT_PUBLIC_API}/api/subscription/payment_method`, keycloak?.token]
       : null,
     fetchWithToken
   )
