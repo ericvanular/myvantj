@@ -220,7 +220,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
 
       <PostGrid posts={postsData?.posts} creatorId={id} setShow={setShowFollowModal} />
 
-      {postsData?.posts?.length > MAX_DISPLAY && (
+      {/* {postsData?.posts?.length > MAX_DISPLAY && (
         <div className="flex justify-end text-base font-medium leading-6">
           <Link
             href="/blog"
@@ -230,7 +230,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
             All Posts &rarr;
           </Link>
         </div>
-      )}
+      )} */}
     </>
   )
 }

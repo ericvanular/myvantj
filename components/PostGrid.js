@@ -16,7 +16,7 @@ const PostGrid = ({ posts, creatorId, setShow }) => {
       ) : (
         <div className="container mx-auto mt-2">
           {posts
-            ?.slice(0, 5)
+            // ?.slice(0, 5)
             .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
             .map((post) => {
               return (
