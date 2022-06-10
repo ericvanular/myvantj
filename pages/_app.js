@@ -1,5 +1,6 @@
 import '@/css/tailwind.css'
 import '@/css/creditcard.scss'
+import '@/css/custom.css'
 
 import { ThemeProvider } from 'next-themes'
 import Head from 'next/head'

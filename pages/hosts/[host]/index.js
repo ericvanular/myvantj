@@ -166,12 +166,12 @@ export default function Home({ host, id, username, description, avatar_url, bann
       />
 
       {banner_url && (
-        <div className="lg:hidden">
-          <img
+        <div className="max-h-48 sm:max-h-60 md:max-h-72 lg:hidden flex items-center w-11/12 relative mx-auto lg:mx-0 h-full">
+          <Image
             src={banner_url}
             layout="fill"
             alt={username}
-            className="rounded-lg object-cover object-top border"
+            className="rounded-lg object-cover object-center"
           />
         </div>
       )}
@@ -194,27 +194,29 @@ export default function Home({ host, id, username, description, avatar_url, bann
           <div className="space-y-5 md:space-x-5">
             <button
               onClick={() => setShowTipModal(true)}
-              className="font-semibold text-xl w-full block md:w-1/5 md:inline px-8 py-3 font-medium text-black border-2 border-indigo-800 dark:border-white rounded-md bg-pink-400 hover:bg-pink-600 hover:text-white transiton ease-linear duration-300"
+              className="font-semibold text-2xl w-full block md:w-1/5 md:inline px-8 py-3 font-medium text-black border-2 border-indigo-800 dark:border-white rounded-md bg-pink-400 hover:bg-pink-600 hover:text-white transiton ease-linear duration-300"
             >
               Tip
             </button>
             <button
               onClick={() => setShowFollowModal(true)}
-              className="font-semibold text-xl w-full block md:w-1/5 md:inline px-8 py-3 font-medium text-black border-2 border-indigo-800 dark:border-white rounded-md bg-purple-400 hover:bg-purple-800 hover:text-white transiton ease-linear duration-300"
+              className="font-semibold text-2xl w-full block md:w-1/5 md:inline px-8 py-3 font-medium text-black border-2 border-indigo-800 dark:border-white rounded-md bg-purple-400 hover:bg-purple-800 hover:text-white transiton ease-linear duration-300"
             >
               Follow
             </button>
           </div>
           {/* <span className="font-normal text-gray-500 text-sm">I am currently open for part-time work.</span> */}
         </div>
-        <div className="flex items-center w-11/12 relative mx-auto lg:mx-0 transform duration-500 hover:shadow-2xl cursor-pointer hover:scale-[1.05]">
-          <Image
-            src={avatar_url}
-            layout="fill"
-            alt={username}
-            className="rounded-lg object-cover object-top"
-          />
-        </div>
+        {avatar_url && (
+          <div className="flex items-center w-11/12 relative mx-auto lg:mx-0 transform duration-500 hover:shadow-2xl cursor-pointer hover:scale-[1.05]">
+            <Image
+              src={avatar_url}
+              layout="fill"
+              alt={username}
+              className="rounded-lg object-cover object-top"
+            />
+          </div>
+        )}
       </header>
       <hr className="text-pink-500 m-5 md:mx-0" />
 
