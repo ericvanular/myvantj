@@ -2,11 +2,53 @@ import { useState, useRef } from 'react'
 import formatDate from '@/lib/utils/formatDate'
 import generateFileUrl from '@/lib/utils/generateFileUrl'
 import Image from './Image'
+import VideoPlayer from './VideoPlayer'
+import Lightbox from 'lightbox-react'
+import 'lightbox-react/style.css'
+// import Lightbox from 'react-image-lightbox'
+// import 'react-image-lightbox/style.css'
 
 const PostGrid = ({ posts, creatorId, setShow }) => {
   const textInput = useRef(null)
+  const playerRef = useRef(null)
   const [hovered, setHovered] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [currentImage, setCurrentImage] = useState('')
+  const [viewerIsOpen, setViewerIsOpen] = useState(false)
+
+  const openLightbox = (fileSrc) => {
+    setCurrentImage(fileSrc)
+    setViewerIsOpen(true)
+  }
+
+  const closeLightbox = () => {
+    setViewerIsOpen(false)
+    setCurrentImage('')
+  }
+
+  const videoJsOptions = (src, type) => {
+    return {
+      autoplay: false,
+      controls: true,
+      responsive: true,
+      fluid: true,
+      sources: [
+        {
+          src: src,
+          type: type,
+        },
+      ],
+    }
+  }
+
+  const handlePlayerReady = (player) => {
+    playerRef.current = player
+    player.on('click', () => {
+      if (!player.isFullscreen()) {
+        player.requestFullscreen()
+      }
+    })
+  }
 
   return (
     <div className={`max-w-full my-2 flex flex-wrap flex-row ${!posts?.length ? 'hidden' : ''}`}>
@@ -21,15 +63,22 @@ const PostGrid = ({ posts, creatorId, setShow }) => {
                   {post.files ? (
                     <>
                       {post.files[0].mime_type.match('video.*') ? (
-                        {
-                          /*<VideoPlayer className="feed-image ui fluid rounded image" videoSrc={generateFileUrl(creator.id, post.files[0].file_name)} />*/
-                        }
+                        <VideoPlayer
+                          options={videoJsOptions(
+                            generateFileUrl(creatorId, post.files[0].file_name),
+                            post.files[0].mime_type
+                          )}
+                          onReady={handlePlayerReady}
+                        />
                       ) : (
                         <Image
                           alt={post.description}
                           src={generateFileUrl(creatorId, post.files[0].file_name)}
                           className="object-cover object-center"
                           layout="fill"
+                          onMouseDown={() =>
+                            openLightbox(generateFileUrl(creatorId, post.files[0].file_name))
+                          }
                         />
                       )}
 
@@ -74,6 +123,20 @@ const PostGrid = ({ posts, creatorId, setShow }) => {
               </div>
             )
           })}
+      {viewerIsOpen && (
+        <Lightbox
+          mainSrc={currentImage}
+          nextSrc={null}
+          prevSrc={null}
+          onCloseRequest={closeLightbox}
+          onMovePrevRequest={null}
+          onMoveNextRequest={null}
+          discourageDownloads={false}
+          clickOutsideToClose={true}
+          animationDuration={100}
+          // imageTitle={creator.username}
+        />
+      )}
     </div>
   )
 }
