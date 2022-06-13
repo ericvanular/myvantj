@@ -81,16 +81,9 @@ const PostGrid = ({ posts, creatorId, setShow }) => {
                           }
                         />
                       )}
-
-                      {/*<img className="feed-image ui fluid rounded image" src={generateFileUrl(creator.id, post.files[0].file_name)} onMouseDown={() => openLightbox(generateFileUrl(creator.id, post.files[0].file_name))} />*/}
                     </>
                   ) : (
                     <div className="flex justify-center items-center p-4 w-full h-60 bg-gradient-to-tr from-indigo-100 via-pink-200 to-purple-300 background-animate">
-                      {/*<img
-                          alt="gallery"
-                          className="absolute w-20 h-20 object-cover object-center "
-                          src={'/static/images/lock.png'}
-                        />*/}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
@@ -114,7 +107,6 @@ const PostGrid = ({ posts, creatorId, setShow }) => {
                           <span className="inline-flex bg-black text-white rounded-full p-4 justify-center items-center font-semibold">
                             FOLLOW
                           </span>
-                          {/* <span className="inline-flex px-2">Click to see this post</span> */}
                         </div>
                       </button>
                     </div>
