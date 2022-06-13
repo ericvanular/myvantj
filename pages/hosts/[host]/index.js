@@ -11,8 +11,6 @@ import Image from '@/components/Image'
 
 import useSWR from 'swr'
 
-const MAX_DISPLAY = 5
-
 import { useKeycloak } from '@react-keycloak/ssr'
 
 export async function getStaticPaths() {
@@ -51,6 +49,7 @@ export async function getStaticProps(context) {
 }
 
 export default function Home({ host, id, username, description, avatar_url, banner_url }) {
+  const [pageIndex, setPageIndex] = useState(1)
   const [redirect, setRedirect] = useState(false)
   const [creator, setCreator] = useState({})
   const [posts, setPosts] = useState([])
@@ -128,10 +127,10 @@ export default function Home({ host, id, username, description, avatar_url, bann
     fetchWithToken
   )
 
-  const { data: postsData, error: postsError } = useSWR(
-    [`${process.env.NEXT_PUBLIC_API}/api/creator/posts/${host.split('.')[0]}`, keycloak?.token],
-    fetchWithToken
-  )
+  // const { data: postsData, error: postsError } = useSWR(
+  //   [`${process.env.NEXT_PUBLIC_API}/api/creator/posts/${host.split('.')[0]}?page=${pageIndex}`, keycloak?.token],
+  //   fetchWithToken
+  // )
 
   {
     /*
@@ -219,20 +218,13 @@ export default function Home({ host, id, username, description, avatar_url, bann
         )}
       </header>
       <hr className="text-pink-500 m-5 md:mx-0" />
-
-      <PostGrid posts={postsData?.posts} creatorId={id} setShow={setShowFollowModal} />
-
-      {/* {postsData?.posts?.length > MAX_DISPLAY && (
-        <div className="flex justify-end text-base font-medium leading-6">
-          <Link
-            href="/blog"
-            className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-            aria-label="all posts"
-          >
-            All Posts &rarr;
-          </Link>
-        </div>
-      )} */}
+      <PostGrid
+        pageIndex={pageIndex}
+        setPageIndex={setPageIndex}
+        host={host}
+        creatorId={id}
+        setShow={setShowFollowModal}
+      />
     </>
   )
 }
