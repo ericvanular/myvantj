@@ -173,7 +173,7 @@ export default function FollowModal(props) {
             ) : status[0] === 'failure' ? (
               <ErrorComponent onBackButtonClick={() => setStatus('')} errors={status[1]} />
             ) : status === 'checkout' ? (
-              <CheckoutBTC charge={charge} />
+              <CheckoutBTC username={props.username} charge={charge} />
             ) : plan ? (
               // props.paymentMethods?.length ? (
               <>
