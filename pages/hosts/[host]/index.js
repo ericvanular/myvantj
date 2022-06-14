@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from '@/components/Link'
+import fetchWithToken from '@/lib/utils/fetchWithToken'
 import { PageSEO } from '@/components/SEO'
 import PostGrid from '@/components/PostGrid'
 import FollowModal from '@/components/FollowModal'
@@ -51,8 +52,6 @@ export async function getStaticProps(context) {
 export default function Home({ host, id, username, description, avatar_url, banner_url }) {
   const [pageIndex, setPageIndex] = useState(1)
   const [redirect, setRedirect] = useState(false)
-  const [creator, setCreator] = useState({})
-  const [posts, setPosts] = useState([])
   const [paymentMethods, setPaymentMethods] = useState([])
   const [showTipModal, setShowTipModal] = useState(false)
   const [showFollowModal, setShowFollowModal] = useState(false)
@@ -60,57 +59,10 @@ export default function Home({ host, id, username, description, avatar_url, bann
 
   const { keycloak } = useKeycloak()
 
-  const parsedToken = keycloak?.tokenParsed
-
-  /*
-  const { data, error, isValidating } = useSWR(
-    `http://localhost:5000/api/creator/posts/${host.split('.')[0]}`,
-    (url) =>
-      fetch(url, {
-        headers: {
-          Authorization: `Bearer ${parsedToken}`, //${getCookie('next-auth.session-token')}`,
-        },
-        credentials: 'include',
-      }).then((res) => res.json()),
-    {
-      // Silently refresh token every expiry time
-      //refreshInterval: 45,
-    }
+  const { data: creatorData, error: creatorError } = useSWR(
+    [`${process.env.NEXT_PUBLIC_API}/api/creator/${host.split('.')[0]}`, 'GET', keycloak?.token],
+    fetchWithToken
   )
-  */
-
-  const fetchWithToken = async (url, token) => {
-    const res = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    return res.json()
-  }
-
-  const getCreator = () => {
-    const options = {
-      method: 'get',
-      url: `${process.env.NEXT_PUBLIC_API}/api/creator/${host}`,
-    }
-    API(options)
-      .then((data) => setCreator(data.creator))
-      .catch(() => setRedirect(true))
-  }
-
-  const getPosts = (page) => {
-    const options = {
-      method: 'get',
-      url: username
-        ? `${process.env.NEXT_PUBLIC_API}/api/creator/posts/${username}?page=${page}`
-        : `${process.env.NEXT_PUBLIC_API}/api/creator/posts?page=${page}`,
-    }
-    API(options)
-      .then((data) => {
-        setPosts(data.posts)
-      })
-      .catch(() => setRedirect(true))
-  }
 
   const getPaymentMethods = () => {
     const options = {
@@ -122,25 +74,10 @@ export default function Home({ host, id, username, description, avatar_url, bann
 
   const { data: paymentMethodsData, error: paymentMethodsError } = useSWR(
     keycloak?.token
-      ? [`${process.env.NEXT_PUBLIC_API}/api/subscription/payment_method`, keycloak?.token]
+      ? [`${process.env.NEXT_PUBLIC_API}/api/subscription/payment_method`, 'GET', keycloak?.token]
       : null,
     fetchWithToken
   )
-
-  // const { data: postsData, error: postsError } = useSWR(
-  //   [`${process.env.NEXT_PUBLIC_API}/api/creator/posts/${host.split('.')[0]}?page=${pageIndex}`, keycloak?.token],
-  //   fetchWithToken
-  // )
-
-  {
-    /*
-    useEffect(() => {
-		if (props.username) {
-			getPlans()
-		}
-	}, [props.username])
-    */
-  }
 
   return (
     <>
@@ -149,8 +86,7 @@ export default function Home({ host, id, username, description, avatar_url, bann
         open={showFollowModal}
         setOpen={setShowFollowModal}
         username={username}
-        getCreator={getCreator}
-        getPosts={getPosts}
+        creatorData={creatorData}
         banner_url={banner_url}
         avatar_url={avatar_url}
         paymentMethods={paymentMethodsData?.payment_methods}

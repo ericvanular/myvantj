@@ -18,16 +18,6 @@ const LayoutWrapper = ({ children }) => {
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const router = useRouter()
 
-  const fetcher = async (url) => {
-    const res = await fetch(url)
-    return res.json()
-  }
-
-  const { data, error } = useSWR(
-    `${process.env.NEXT_PUBLIC_API}/api/creator/${router?.query.host?.split('.')[0]}`,
-    fetcher
-  )
-
   return (
     <SectionContainer>
       <RegisterModal open={showRegisterModal} setOpen={setShowRegisterModal} />

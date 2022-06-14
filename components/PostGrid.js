@@ -25,6 +25,7 @@ const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
   const { data: postsData, error: postsError } = useSWR(
     [
       `${process.env.NEXT_PUBLIC_API}/api/creator/posts/${host.split('.')[0]}?page=${pageIndex}`,
+      'GET',
       keycloak?.token,
     ],
     fetchWithToken
