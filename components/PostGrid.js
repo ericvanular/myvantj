@@ -14,7 +14,6 @@ import { useKeycloak } from '@react-keycloak/ssr'
 
 const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
   const textInput = useRef(null)
-  const playerRef = useRef(null)
   const [hovered, setHovered] = useState(false)
   const [copied, setCopied] = useState(false)
   const [currentImage, setCurrentImage] = useState('')
@@ -52,14 +51,12 @@ const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
       sources: [
         {
           src: src,
-          type: type,
         },
       ],
     }
   }
 
   const handlePlayerReady = (player) => {
-    playerRef.current = player
     player.on('click', () => {
       if (!player.isFullscreen()) {
         player.requestFullscreen()
@@ -92,7 +89,7 @@ const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
                           <Image
                             alt={post.description}
                             src={generateFileUrl(creatorId, post.files[0].file_name)}
-                            className="object-cover object-center"
+                            className="object-cover object-top"
                             layout="fill"
                             onMouseDown={() =>
                               openLightbox(generateFileUrl(creatorId, post.files[0].file_name))
@@ -118,10 +115,10 @@ const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
                           />
                         </svg>
                         <button
-                          className="rounded relative z-10 w-full h-full opacity-0 hover:opacity-100 cursor-pointer flex flex-row justify-center"
+                          className="rounded relative z-10 w-full h-full opacity-0 hover:opacity-100 cursor-pointer flex flex-row items-center justify-center"
                           onClick={() => setShow(true)}
                         >
-                          <div className="inline-flex items-center leading-none rounded-full p-2 shadow text-black text-4xl border border-gray-400">
+                          <div className="inline-flex items-center leading-none bg-indigo-50 rounded-full p-2 shadow text-black text-4xl border border-gray-400">
                             <span className="inline-flex bg-black text-white rounded-full p-4 justify-center items-center font-semibold">
                               FOLLOW
                             </span>
