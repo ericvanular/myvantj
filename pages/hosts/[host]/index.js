@@ -99,9 +99,8 @@ export default function Home({ host, id, username, description, avatar_url, bann
         paymentMethods={paymentMethodsData?.payment_methods}
         getPaymentMethods={getPaymentMethods}
       />
-
       {banner_url && (
-        <div className="max-h-48 sm:max-h-60 md:max-h-72 lg:hidden flex items-center w-11/12 relative mx-auto lg:mx-0 h-full">
+        <div className="h-60 lg:hidden flex items-center w-11/12 relative mx-auto lg:mx-0">
           <Image
             src={banner_url}
             layout="fill"
@@ -110,7 +109,6 @@ export default function Home({ host, id, username, description, avatar_url, bann
           />
         </div>
       )}
-
       <header className="flex flex-col lg:flex-row justify-between my-6 lg:min-h-72">
         <div className="flex flex-col justify-between min-w-[66%] text-center lg:text-left lg:mr-12">
           <div className="flex items-center justify-center lg:justify-start gap-2">
