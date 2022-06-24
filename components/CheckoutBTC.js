@@ -3,7 +3,7 @@ import Crypto101 from './Crypto101'
 import { QRCodeSVG } from 'qrcode.react'
 
 export default function CheckoutBTC({ username, charge }) {
-  const [toggle, setToggle] = useState(true)
+  const [toggle, setToggle] = useState(false)
   const [help, setHelp] = useState(false)
   const [copied, setCopied] = useState(false)
 
