@@ -42,7 +42,7 @@ export default function RegisterForm(props) {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password, accountType: 'Creator' }),
+      body: JSON.stringify({ email, password, accountType: 'User' }),
     })
     const data = await response.json()
     if (data.error) {
