@@ -24,7 +24,7 @@ const LayoutWrapper = ({ children }) => {
       <div className="flex flex-col justify-between">
         <header className="flex items-center justify-between py-10">
           <div>
-            <Link href="/" aria-label="Tailwind CSS Blog">
+            <Link href="/" aria-label="Vantj">
               <div className="flex items-center justify-between">
                 <div className="mr-3">
                   {/* data?.creator?.banner_url ? (
@@ -38,7 +38,7 @@ const LayoutWrapper = ({ children }) => {
                 </div>
                 {router?.query?.host ? (
                   <div className="hidden md:block text-lg sm:text-2xl font-semibold dark:text-gray-100 text-indigo-900 hover:text-black">
-                    {router?.query.host}
+                    {/* {router?.query.host} */}
                   </div>
                 ) : (
                   siteMetadata.headerTitle

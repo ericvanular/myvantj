@@ -1,7 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import API from '@/lib/api'
 //import { LockClosedIcon } from '@heroicons/react/solid'
-import { useKeycloak } from '@react-keycloak/ssr'
+// import { useKeycloak } from '@react-keycloak-fork/ssr'
+import { useSession, signIn, signOut } from 'next-auth/react'
+import { SiteContext } from 'pages/_app'
 
 const ErrorComponent = (props) => (
   <div className="flex flex-col justify-center items-center">
@@ -27,32 +29,38 @@ const ErrorComponent = (props) => (
   </div>
 )
 
-export default function RegisterForm(props) {
-  const { keycloak } = useKeycloak()
+export default function RegisterForm({ signUpSubtext }) {
+  // const { keycloak } = useKeycloak()
+  const { data: session, status } = useSession()
   const [redirect, setRedirect] = useState(false)
-  const [status, setStatus] = useState('')
+  const [mode, setMode] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const { partyData } = useContext(SiteContext)
+
   const registerAccount = async () => {
-    setStatus('processing')
+    setMode('processing')
     const response = await fetch(`${process.env.NEXT_PUBLIC_API}/api/auth/register`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password, accountType: 'User' }),
+      body: JSON.stringify({
+        email,
+        password,
+        parentOrgId: partyData?.id,
+        registrationType: 'Registree',
+      }),
     })
     const data = await response.json()
     if (data.error) {
-      setStatus(['failure', data.error])
+      setMode(['failure', data.error])
       return
     } else {
-      setStatus('success')
-      setTimeout(() => {
-        window.location.href = keycloak.createLoginUrl()
-      }, 3000)
+      setMode('success')
+      setTimeout(() => signIn('keycloak'), 2000)
     }
   }
 
@@ -60,14 +68,22 @@ export default function RegisterForm(props) {
     <div className="flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <img
-            className="mx-auto h-12 w-auto"
-            src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
-            alt="Workflow"
-          />
+          {partyData?.avatar_url ? (
+            <img
+              className="mx-auto w-auto object-cover object-center"
+              src={partyData.avatar_url}
+              alt={partyData.avatar_url}
+            />
+          ) : (
+            <img
+              className="mx-auto h-12 w-auto"
+              src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg"
+              alt="Workflow"
+            />
+          )}
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create Account</h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            {props.signUpSubtext}
+            {signUpSubtext}
             {/*
               <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
                 start your 14-day free trial
@@ -76,7 +92,7 @@ export default function RegisterForm(props) {
           </p>
         </div>
 
-        {status === 'processing' ? (
+        {mode === 'processing' ? (
           <div className="flexcenter flexcol">
             {/*<Spinner
 										animation="border"
@@ -85,15 +101,15 @@ export default function RegisterForm(props) {
 										/>*/}
             <h2 style={{ marginBottom: '2rem' }}>Registering your new account...</h2>
           </div>
-        ) : status === 'success' ? (
+        ) : mode === 'success' ? (
           <div className="flexcenter flexcol">
             {/*<img src={followed} alt="" height="100" style={{ margin: '2rem' }} />*/}
             <h2 style={{ marginBottom: '2rem' }}>
               Nice, you signed up! Sending you to sign in to your new account.{' '}
             </h2>
           </div>
-        ) : status[0] === 'failure' ? (
-          <ErrorComponent onBackButtonClick={() => setStatus('')} errors={status[1]} />
+        ) : mode[0] === 'failure' ? (
+          <ErrorComponent onBackButtonClick={() => setMode('')} errors={mode[1]} />
         ) : (
           <form className="mt-8 space-y-6" onSubmit={registerAccount}>
             <input type="hidden" name="remember" defaultValue="true" />
@@ -148,11 +164,7 @@ export default function RegisterForm(props) {
               <div className="text-sm">
                 <button
                   className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer"
-                  onClick={() => {
-                    if (keycloak) {
-                      window.location.href = keycloak.createLoginUrl()
-                    }
-                  }}
+                  onClick={() => signIn('keycloak')}
                 >
                   Have an account? Login
                 </button>

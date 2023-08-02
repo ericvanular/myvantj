@@ -41,7 +41,7 @@ module.exports = withBundleAnalyzer({
     return config
   },
   images: {
-    domains: ['images.unsplash.com', 'static.jetpeak.co'],
+    domains: ['images.unsplash.com', 'static.vantj.com', 'static-dev.vantj.com'],
   },
   async rewrites() {
     return {

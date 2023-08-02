@@ -17,7 +17,7 @@ export default function Footer() {
         </div>
         */}
         <div className="flex mt-2 mb-8 space-x-2 text-sm text-gray-300 dark:text-gray-700">
-          <Link href="https://jetpeak.co">Powered by CreatorBase</Link>
+          <Link href="https://vantj.com">Powered by Vantj</Link>
         </div>
       </div>
     </footer>

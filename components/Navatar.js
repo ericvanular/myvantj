@@ -1,18 +1,32 @@
 import { useEffect, useState, Fragment } from 'react'
+// import { headers } from 'next/headers'
 import Image from './Image'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import useSWR from 'swr'
 
-import { useKeycloak } from '@react-keycloak/ssr'
-//import { signIn, signOut, useSession } from 'next-auth/client'
+// import { useKeycloak } from '@react-keycloak-fork/ssr'
+import { useSession, signIn, signOut, getSession } from 'next-auth/react'
+// import { useAuth } from 'react-oidc-context';
+
+const logOutKeycloak = async () => {
+  const response = await fetch('/api/auth/logOutKeycloak', {
+    method: 'GET',
+    // headers: headers()
+  })
+  const responseJson = await response.json()
+  await signOut({ redirect: false })
+  window.location.href = responseJson.path
+}
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 const Navatar = (props) => {
-  const { keycloak } = useKeycloak()
-  //const [session, loading] = useSession()
+  // const { keycloak } = useKeycloak()
+  // const auth = useAuth()
+  const { data: session, status } = useSession()
+  const authenticated = status === 'authenticated'
 
   const fetcher = async (url) => {
     const res = await fetch(url)
@@ -20,9 +34,9 @@ const Navatar = (props) => {
   }
 
   const { data, error } = useSWR(
-    keycloak?.tokenParsed?.preferred_username
-      ? `${process.env.NEXT_PUBLIC_API}/api/creator/${keycloak?.tokenParsed?.preferred_username}`
-      : null,
+    // keycloak?.authenticated
+    // auth.user?.access_token
+    authenticated ? `${process.env.NEXT_PUBLIC_API}/api/creator/${session.user?.name}` : null,
     fetcher
   )
 
@@ -31,7 +45,7 @@ const Navatar = (props) => {
       <div>
         <Menu.Button className="bg-white flex text-sm rounded-full ring-1 hover:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-800 focus:ring-white">
           <span className="sr-only">Open User Menu</span>
-          {keycloak?.authenticated ? (
+          {authenticated ? (
             data?.creator?.avatar_url ? (
               <img
                 className="h-12 w-12 rounded-full object-cover object-center"
@@ -76,19 +90,20 @@ const Navatar = (props) => {
                   'block px-4 py-2 text-md font-bold text-gray-700 w-full text-center'
                 )}
               >
-                {keycloak?.authenticated ? keycloak?.tokenParsed?.preferred_username : 'Guest'}
+                {authenticated ? session.user?.name : 'Guest'}
               </div>
             )}
           </Menu.Item>
           <Menu.Item>
             {({ active }) =>
-              keycloak?.authenticated ? (
+              authenticated ? (
                 <button
-                  onClick={() => {
-                    if (keycloak) {
-                      window.location.href = keycloak.createLogoutUrl()
-                    }
-                  }}
+                  // onClick={() => {
+                  //   if (keycloak) {
+                  //     window.location.href = keycloak.createLogoutUrl()
+                  //   }
+                  // }}
+                  onClick={() => logOutKeycloak()}
                   className={classNames(
                     active ? 'bg-gray-100' : '',
                     'block px-4 py-2 text-sm text-gray-700 cursor-pointer w-full'
@@ -98,11 +113,13 @@ const Navatar = (props) => {
                 </button>
               ) : (
                 <button
-                  onClick={() => {
-                    if (keycloak) {
-                      window.location.href = keycloak.createLoginUrl()
-                    }
-                  }}
+                  // onClick={() => {
+                  //   if (keycloak) {
+                  //     window.location.href = keycloak.createLoginUrl()
+                  //   }
+                  // }}
+                  // onClick={() => void auth.signinRedirect()}
+                  onClick={() => signIn('keycloak')}
                   className={classNames(
                     active ? 'bg-gray-100' : '',
                     'block px-4 py-2 text-sm text-gray-700 cursor-pointer w-full'
@@ -113,7 +130,7 @@ const Navatar = (props) => {
               )
             }
           </Menu.Item>
-          {!keycloak?.authenticated && (
+          {!authenticated && (
             <Menu.Item>
               {({ active }) => (
                 <button

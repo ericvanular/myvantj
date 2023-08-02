@@ -17,7 +17,7 @@ import {
 // import wallet from 'public/static/images/wallet.png'
 //import defaultAvatar from '/static/media/userpic-default.png'
 
-import { useKeycloak } from '@react-keycloak/ssr'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 const ErrorComponent = (props) => (
   <div className="flex flex-col justify-center items-center">
@@ -46,23 +46,23 @@ const ErrorComponent = (props) => (
 
 export default function TipModal(props) {
   const [redirect, setRedirect] = useState(false)
-  const [status, setStatus] = useState('')
+  const [mode, setMode] = useState('')
   const [tipAmount, setTipAmount] = useState(0)
   const [charge, setCharge] = useState({})
 
-  const { keycloak } = useKeycloak()
+  const { data: session, status } = useSession()
 
   useEffect(() => {
-    if (keycloak?.token) {
+    if (session?.accessToken) {
       // Initiate socket
-      initiateSocket(keycloak?.token)
+      initiateSocket(session?.accessToken)
       // Start listening for new events
       subscribeToTransactions((err, emittedStatus) => {
         if (err) return
-        setStatus(emittedStatus)
+        setMode(emittedStatus)
         setTimeout(() => {
           props.setOpen(false)
-          setStatus('')
+          setMode('')
           setTipAmount(0)
         }, 5000)
       })
@@ -70,21 +70,21 @@ export default function TipModal(props) {
     return () => {
       disconnectSocket()
     }
-  }, [keycloak?.token])
+  }, [session?.accessToken])
 
   const handleTip = async (amount) => {
-    setStatus('unpaid')
-    await keycloak.updateToken(300)
+    setMode('unpaid')
+    // await keycloak.updateToken(300)
     const response = await sendTipCall(
       `${process.env.NEXT_PUBLIC_API}/api/patron/btctip/${props.username}`,
       amount
     )
     if (response.data?.uri) {
       setCharge(response.data)
-      setStatus('checkout')
+      setMode('checkout')
     } else {
       console.log(response)
-      setStatus(['failure', response.error])
+      setMode(['failure', response.error])
     }
   }
 
@@ -92,7 +92,7 @@ export default function TipModal(props) {
     const res = await fetch(url, {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${keycloak?.token}`,
+        Authorization: `Bearer ${session?.accessToken}`,
       },
       body: JSON.stringify({ amount: amount }),
     })
@@ -101,13 +101,13 @@ export default function TipModal(props) {
 
   const resetModalStatus = () => {
     props.setOpen(false)
-    setStatus('')
+    setMode('')
     setTipAmount(0)
   }
 
   return (
     <Modal open={props.open} setOpen={props.setOpen}>
-      {keycloak?.authenticated ? (
+      {session?.accessToken ? (
         <>
           {/*header*/}
           <div className="flex items-center justify-between p-4 border-b border-solid border-blueGray-200 rounded-t">
@@ -124,13 +124,13 @@ export default function TipModal(props) {
           {/*body*/}
           <div className="relative p-6 flex-auto">
             {
-              status === 'unpaid' ? (
+              mode === 'unpaid' ? (
                 <div className="flex justify-center items-center flex-col">
                   <h2 className="mb-2 dark:text-gray-900">
                     Creating checkout details for you to tip {props.username}...
                   </h2>
                 </div>
-              ) : status === 'processing' ? (
+              ) : mode === 'processing' ? (
                 <div className="flex justify-center items-center flex-col">
                   {/*<Spinner
 								animation="border"
@@ -141,7 +141,7 @@ export default function TipModal(props) {
                     Sending your tip to {props.username}...
                   </h2>
                 </div>
-              ) : status === 'paid' ? (
+              ) : mode === 'paid' ? (
                 <div className="flex justify-center items-center flex-col">
                   <Image
                     src={'/static/images/wallet.png'}
@@ -152,9 +152,9 @@ export default function TipModal(props) {
                   />
                   <h2 className="m-4 text-xl">You sent a tip to {props.username}!</h2>
                 </div>
-              ) : status[0] === 'failure' ? (
-                <ErrorComponent onBackButtonClick={() => setStatus('')} errors={status[1]} />
-              ) : status === 'checkout' ? (
+              ) : mode[0] === 'failure' ? (
+                <ErrorComponent onBackButtonClick={() => setMode('')} errors={mode[1]} />
+              ) : mode === 'checkout' ? (
                 <CheckoutBTC username={props.username} charge={charge} />
               ) : (
                 // props.paymentMethods?.length ? (

@@ -10,7 +10,7 @@ import 'lightbox-react/style.css'
 // import 'react-image-lightbox/style.css'
 
 import useSWR from 'swr'
-import { useKeycloak } from '@react-keycloak/ssr'
+import { useSession, signIn, signOut } from 'next-auth/react'
 
 const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
   const textInput = useRef(null)
@@ -19,13 +19,13 @@ const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
   const [currentImage, setCurrentImage] = useState('')
   const [viewerIsOpen, setViewerIsOpen] = useState(false)
 
-  const { keycloak } = useKeycloak()
+  const { data: session, status } = useSession()
 
   const { data: postsData, error: postsError } = useSWR(
     [
       `${process.env.NEXT_PUBLIC_API}/api/creator/posts/${host.split('.')[0]}?page=${pageIndex}`,
       'GET',
-      keycloak?.token,
+      session?.accessToken,
     ],
     fetchWithToken
   )
