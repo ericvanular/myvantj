@@ -5,7 +5,7 @@ import { getToken } from 'next-auth/jwt'
 export default async (req, res) => {
   const { host } = req.headers
   if (!host) return res.status(400).send(`Bad Request, missing host header`)
-  process.env.NEXTAUTH_URL = /localhost/.test(host) ? `http://${host}` : host
+  process.env.NEXTAUTH_URL = /localhost/.test(host) ? `http://${host}` : `https://${host}`
 
   const secret = process.env.NEXTAUTH_SECRET
 
@@ -31,5 +31,5 @@ export default async (req, res) => {
     path = path + `&client_id=${process.env.KEYCLOAK_ID}`
   }
 
-  res.status(200).json({ path, token, secret })
+  res.status(200).json({ path })
 }
