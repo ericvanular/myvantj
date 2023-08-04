@@ -27,7 +27,9 @@ const Navatar = (props) => {
 
   const { data: userData, error: userError } = useSWR(
     [
-      `${process.env.NEXT_PUBLIC_API}/api/creator/${session?.user?.name}`,
+      session?.user?.name
+        ? `${process.env.NEXT_PUBLIC_API}/api/creator/${session?.user?.name}`
+        : null,
       'GET',
       session?.accessToken,
     ],

@@ -37,7 +37,7 @@ function App({ Component, pageProps: { session, ...pageProps }, cookies }) {
     [
       typeof window !== 'undefined'
         ? `${process.env.NEXT_PUBLIC_API}/api/company/${window.location.hostname.split('.')[0]}`
-        : '',
+        : null,
       'GET',
       session?.accessToken,
     ],
