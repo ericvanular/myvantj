@@ -9,7 +9,14 @@ export default async (req, res) => {
 
   const secret = process.env.NEXTAUTH_SECRET
 
-  const token = await getToken({ req, secret })
+  const token = await getToken({
+    req,
+    secret,
+    cookieName:
+      process.env.NODE_ENV === 'production'
+        ? '__Secure-next-auth.session-token'
+        : 'next-auth.session-token',
+  })
   // const session = await getServerSession(req, res, authOptions)
 
   let path = `${
@@ -24,5 +31,5 @@ export default async (req, res) => {
     path = path + `&client_id=${process.env.KEYCLOAK_ID}`
   }
 
-  res.status(200).json({ path, token })
+  res.status(200).json({ path, token, secret })
 }
