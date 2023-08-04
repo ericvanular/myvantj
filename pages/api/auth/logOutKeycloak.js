@@ -5,7 +5,7 @@ import { getToken } from 'next-auth/jwt'
 export default async (req, res) => {
   const { host } = req.headers
   if (!host) return res.status(400).send(`Bad Request, missing host header`)
-  process.env.NEXTAUTH_URL = /localhost/.test(host) ? `http://${host}` : `https://${host}`
+  // process.env.NEXTAUTH_URL = /localhost/.test(host) ? `http://${host}` : `https://${host}`
 
   const secret = process.env.NEXTAUTH_SECRET
 
