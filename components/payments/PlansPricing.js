@@ -39,7 +39,7 @@ export default function PlansPricing({
       'GET',
       session?.accessToken,
     ],
-    fetchWithToken
+    ([url, method, token]) => fetchWithToken(url, method, token)
   )
 
   const plans = plansData?.public_products

@@ -10,8 +10,6 @@ import ThemeSwitch from './ThemeSwitch'
 import Navatar from './Navatar'
 import RegisterModal from './RegisterModal'
 
-import useSWR from 'swr'
-
 import { useRouter } from 'next/router'
 
 const LayoutWrapper = ({ children }) => {

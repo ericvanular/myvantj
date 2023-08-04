@@ -3,10 +3,9 @@ import { useEffect, useState, Fragment } from 'react'
 import Image from './Image'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import useSWR from 'swr'
+import fetchWithToken from '@/lib/utils/fetchWithToken'
 
-// import { useKeycloak } from '@react-keycloak-fork/ssr'
 import { useSession, signIn, signOut, getSession } from 'next-auth/react'
-// import { useAuth } from 'react-oidc-context';
 
 const logOutKeycloak = async () => {
   const response = await fetch('/api/auth/logOutKeycloak', {
@@ -23,21 +22,16 @@ function classNames(...classes) {
 }
 
 const Navatar = (props) => {
-  // const { keycloak } = useKeycloak()
-  // const auth = useAuth()
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated'
 
-  const fetcher = async (url) => {
-    const res = await fetch(url)
-    return res.json()
-  }
-
-  const { data, error } = useSWR(
-    // keycloak?.authenticated
-    // auth.user?.access_token
-    authenticated ? `${process.env.NEXT_PUBLIC_API}/api/creator/${session.user?.name}` : null,
-    fetcher
+  const { data: userData, error: userError } = useSWR(
+    [
+      `${process.env.NEXT_PUBLIC_API}/api/creator/${session?.user?.name}`,
+      'GET',
+      session?.accessToken,
+    ],
+    ([url, method, token]) => fetchWithToken(url, method, token)
   )
 
   return (
@@ -46,17 +40,17 @@ const Navatar = (props) => {
         <Menu.Button className="bg-white flex text-sm rounded-full ring-1 hover:ring-2 focus:ring-offset-2 focus:ring-offset-indigo-800 focus:ring-white">
           <span className="sr-only">Open User Menu</span>
           {authenticated ? (
-            data?.creator?.avatar_url ? (
+            userData?.creator?.avatar_url ? (
               <img
                 className="h-12 w-12 rounded-full object-cover object-center"
-                src={data?.creator.avatar_url}
-                alt={data?.creator.username}
+                src={userData?.creator.avatar_url}
+                alt={userData?.creator.username}
               />
             ) : (
               <div className="h-12 w-12 text-xl bg-indigo-800 text-white rounded-full font-semibold flex items-center justify-center">
-                {data?.creator?.username
-                  ? data?.creator?.username[0].toUpperCase()
-                  : data?.creator?.email[0].toUpperCase()}
+                {userData?.creator?.username
+                  ? userData?.creator?.username[0].toUpperCase()
+                  : userData?.creator?.email[0].toUpperCase()}
               </div>
             )
           ) : (

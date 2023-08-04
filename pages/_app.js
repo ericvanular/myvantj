@@ -35,13 +35,13 @@ export const SiteContext = createContext()
 function App({ Component, pageProps: { session, ...pageProps }, cookies }) {
   const { data: partyData, error: partyError } = useSWR(
     [
-      `${process.env.NEXT_PUBLIC_API}/api/company/${
-        typeof window !== 'undefined' ? window.location.hostname.split('.')[0] : ''
-      }`,
+      typeof window !== 'undefined'
+        ? `${process.env.NEXT_PUBLIC_API}/api/company/${window.location.hostname.split('.')[0]}`
+        : '',
       'GET',
       session?.accessToken,
     ],
-    fetchWithToken
+    ([url, method, token]) => fetchWithToken(url, method, token)
   )
 
   return (

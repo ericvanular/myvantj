@@ -27,7 +27,7 @@ const PostGrid = ({ host, creatorId, pageIndex, setShow, setPageIndex }) => {
       'GET',
       session?.accessToken,
     ],
-    fetchWithToken
+    ([url, method, token]) => fetchWithToken(url, method, token)
   )
 
   const posts = postsData?.posts
