@@ -26,13 +26,13 @@ const Navatar = (props) => {
   const authenticated = status === 'authenticated'
 
   const { data: userData, error: userError } = useSWR(
-    [
-      session?.user?.name
-        ? `${process.env.NEXT_PUBLIC_API}/api/creator/${session?.user?.name}`
-        : null,
-      'GET',
-      session?.accessToken,
-    ],
+    session?.user?.name
+      ? [
+          `${process.env.NEXT_PUBLIC_API}/api/creator/${session?.user?.name}`,
+          'GET',
+          session?.accessToken,
+        ]
+      : null,
     ([url, method, token]) => fetchWithToken(url, method, token)
   )
 

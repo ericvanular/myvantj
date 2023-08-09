@@ -26,19 +26,23 @@ export default function PlansPricing({
 }) {
   const [sessionId, setSessionId] = useState('')
   const [billingInterval, setBillingInterval] = useState('month')
+  const [selectedProductCategory, setSelectedProductCategory] = useState('All')
   const [priceIdLoading, setPriceIdLoading] = useState('')
 
   const { data: session, status } = useSession()
+  const authenticated = status === 'authenticated'
   // const { keycloak } = useKeycloak()
 
   const { data: plansData, error: plansError } = useSWR(
-    [
-      `${process.env.NEXT_PUBLIC_API}/api/company/public_products/${
-        host.split('.')[0]
-      }?page=${pageIndex}`,
-      'GET',
-      session?.accessToken,
-    ],
+    session?.accessToken
+      ? [
+          `${process.env.NEXT_PUBLIC_API}/api/company/public_products/${
+            host.split('.')[0]
+          }?page=${pageIndex}`,
+          'GET',
+          session?.accessToken,
+        ]
+      : null,
     ([url, method, token]) => fetchWithToken(url, method, token)
   )
 
@@ -46,6 +50,9 @@ export default function PlansPricing({
   const subscriptions = plansData?.subscriptions.slice(0, 1)
 
   const intervals = Array.from(new Set(plans?.flatMap((plan) => plan.uom_abbreviation)))
+  const productCategories = Array.from(
+    new Set(plans?.flatMap((plan) => plan.product_categories)).add('All')
+  ).reverse()
   // const router = useRouter();
 
   const handleCheckout = async (priceId, mode) => {
@@ -78,6 +85,10 @@ export default function PlansPricing({
     } finally {
       setPriceIdLoading(undefined)
     }
+  }
+
+  function classNames(...classes) {
+    return classes.filter(Boolean).join(' ')
   }
 
   if (
@@ -184,7 +195,7 @@ export default function PlansPricing({
 
   if (!plans?.length)
     return (
-      <section className="bg-black">
+      <section>
         <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
           <div className="sm:flex sm:flex-col sm:align-center"></div>
           <p className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
@@ -278,13 +289,52 @@ export default function PlansPricing({
     )
 
   return (
-    <div className="max-w-6xl px-4 py-8 mx-auto sm:py-12 sm:px-6 lg:px-8">
+    <div className="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
       <div className="sm:flex sm:flex-col sm:align-center">
-        <h1 className="text-4xl font-extrabold sm:text-center sm:text-6xl">Products & Services</h1>
+        {/* <h1 className="text-4xl font-extrabold sm:text-center sm:text-6xl mb-6">Products & Services</h1> */}
         {/* <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
             Choose the service or plan that works best for you!
           </p> */}
-        <h4 className="mt-12 text-2xl text-center sm:text-3xl underline">Subscriptions</h4>
+        {/* Product Category Selector */}
+        <div className="my-3">
+          <div className="sm:hidden">
+            <label htmlFor="tabs" className="sr-only">
+              Select a tab
+            </label>
+            <select
+              id="productCategoryTabs"
+              name="productCategoryTabs"
+              className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+              value={selectedProductCategory}
+              onChange={(e) => setSelectedProductCategory(e.target.value)}
+            >
+              {productCategories.map((productCategory) => (
+                <option key={productCategory} value={productCategory}>
+                  {productCategory}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="hidden sm:block">
+            <nav className="flex justify-center space-x-12" aria-label="Tabs">
+              {productCategories.map((productCategory) => (
+                <button
+                  key={productCategory}
+                  onClick={() => setSelectedProductCategory(productCategory)}
+                  className={classNames(
+                    productCategory === selectedProductCategory
+                      ? 'border-indigo-500 text-indigo-600'
+                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    'whitespace-nowrap py-4 px-1 border-b-2'
+                  )}
+                >
+                  {productCategory}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+        <h4 className="text-xl text-center sm:text-2xl">Subscriptions</h4>
         <div className="relative self-center bg-zinc-900 rounded-lg p-0.5 flex mt-6 sm:mt-8 border border-zinc-800">
           {intervals.includes('month') && (
             <button
@@ -292,8 +342,8 @@ export default function PlansPricing({
               type="button"
               className={`${
                 billingInterval === 'month'
-                  ? 'relative w-1/2 bg-gray-100 border-gray-900 shadow-sm outline-none ring-2 ring-gray-800 ring-opacity-50 z-10'
-                  : 'ml-0.5 relative w-1/2 border border-transparent text-gray-800'
+                  ? 'relative w-1/2 bg-gray-50 dark:bg-gray-500 border-gray-800 shadow-sm outline-none ring-2 ring-blue-600 z-10'
+                  : 'ml-0.5 relative w-1/2 border border-transparent text-gray-800 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:bg-gray-800'
               } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap sm:w-auto sm:px-8`}
             >
               Monthly Billing
@@ -305,8 +355,8 @@ export default function PlansPricing({
               type="button"
               className={`${
                 billingInterval === 'year'
-                  ? 'relative w-1/2 bg-gray-100 border-gray-800 shadow-sm outline-none ring-2 ring-gray-800 ring-opacity-50 z-10'
-                  : 'ml-0.5 relative w-1/2 border border-transparent text-gray-800'
+                  ? 'relative w-1/2 bg-gray-50 dark:bg-gray-500 border-gray-800 shadow-sm outline-none ring-2 ring-blue-600 z-10'
+                  : 'ml-0.5 relative w-1/2 border border-transparent text-gray-800 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:bg-gray-800'
               } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap sm:w-auto sm:px-8`}
             >
               Annual Billing
@@ -316,8 +366,11 @@ export default function PlansPricing({
       </div>
       <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
         {plans.map((plan) => {
-          const price = plan.uom_abbreviation === billingInterval
-          if (!price) return null
+          const categoryIsSelected =
+            plan.product_categories.includes(selectedProductCategory) ||
+            selectedProductCategory === 'All'
+          const billingIntervalIsSelected = plan.uom_abbreviation === billingInterval
+          if (!categoryIsSelected || !billingIntervalIsSelected) return null
           const priceString = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -329,8 +382,8 @@ export default function PlansPricing({
               className="rounded-lg divide-y divide-zinc-600 border border-zinc-800 bg-zinc-900"
             >
               <div className="p-6">
-                <h2 className="text-2xl font-semibold leading-6">{plan.product_name}</h2>
-                <p className="mt-4 text-zinc-300">{plan.product_description}</p>
+                <h2 className="text-2xl font-semibold leading-6">{plan.product.name}</h2>
+                <p className="mt-4 text-zinc-300">{plan.product.description}</p>
                 <p className="mt-8">
                   <span className="text-3xl font-extrabold">{priceString}</span>
                   <span className="text-base font-medium text-zinc-100 ml-2">
@@ -371,8 +424,11 @@ export default function PlansPricing({
       <h4 className="mt-12 text-2xl text-center sm:text-3xl underline">One Time Services</h4>
       <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
         {plans.map((plan) => {
-          const price = plan.uom_abbreviation === 'each'
-          if (!price) return null
+          const categoryIsSelected =
+            plan.product_categories.includes(selectedProductCategory) ||
+            selectedProductCategory === 'All'
+          const isOneTimePurchase = plan.uom_abbreviation === 'each'
+          if (!categoryIsSelected || !isOneTimePurchase) return null
           const priceString = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
@@ -384,8 +440,8 @@ export default function PlansPricing({
               className="rounded-lg divide-y divide-zinc-600 border border-zinc-800 bg-zinc-900"
             >
               <div className="p-6">
-                <h2 className="text-2xl font-semibold leading-6">{plan.product_name}</h2>
-                <p className="mt-4 text-zinc-300">{plan.product_description}</p>
+                <h2 className="text-2xl font-semibold leading-6">{plan.product.name}</h2>
+                <p className="mt-4 text-zinc-300">{plan.product.description}</p>
                 <p className="mt-8">
                   <span className="text-3xl font-extrabold">{priceString}</span>
                   <span className="text-base font-medium text-zinc-100 ml-2">One Time</span>
