@@ -1,20 +1,15 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useContext } from 'react'
 import API from '@/lib/api'
 import formatDate from '@/lib/utils/formatDate'
 import fetchWithToken from '@/lib/utils/fetchWithToken'
 import generateFileUrl from '@/lib/utils/generateFileUrl'
 import useSWR from 'swr'
 import { useSession, signIn, signOut } from 'next-auth/react'
-// import { useKeycloak } from '@react-keycloak-fork/ssr'
+import { SiteContext } from 'pages/_app'
 
 // import Button from '@/components/ui/Button';
-// import { planData } from '@/lib/utils/helpers';
 import { getStripe } from '@/lib/utils/stripe-client'
-// import { Session, User } from '@supabase/supabase-js';
-// import cn from 'classnames';
 // import { useRouter } from 'next/navigation';
-
-// type BillingInterval = 'lifetime' | 'year' | 'month';
 
 export default function PlansPricing({
   host,
@@ -24,14 +19,12 @@ export default function PlansPricing({
   setModalMode,
   setAgreementItemId,
 }) {
-  const [sessionId, setSessionId] = useState('')
   const [billingInterval, setBillingInterval] = useState('month')
   const [selectedProductCategory, setSelectedProductCategory] = useState('All')
-  const [priceIdLoading, setPriceIdLoading] = useState('')
 
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated'
-  // const { keycloak } = useKeycloak()
+  const { partyData } = useContext(SiteContext)
 
   const { data: plansData, error: plansError } = useSWR(
     [
@@ -51,18 +44,8 @@ export default function PlansPricing({
   const productCategories = Array.from(
     new Set(plans?.flatMap((plan) => plan.product_categories)).add('All')
   ).reverse()
-  // const router = useRouter();
 
   const handleCheckout = async (priceId, mode) => {
-    // setPriceIdLoading(price.id);
-    // const vendorPriceId = 'price_1NLZh9IRuYHBw2UMUMxHMs8c'
-    // const vendorAccountId = 'acct_1GsJglIRuYHBw2UM'
-    // if (!user) {
-    //   return router.push('/signin');
-    // }
-    // if (price.product_id === subscription?.prices?.products?.id) {
-    //   return router.push('/account');
-    // }
     try {
       const sessionResponse = await fetchWithToken(
         `${process.env.NEXT_PUBLIC_API}/api/subscription/create_checkout`,
@@ -81,7 +64,7 @@ export default function PlansPricing({
     } catch (error) {
       return alert(error?.message)
     } finally {
-      setPriceIdLoading(undefined)
+      // console.log('')
     }
   }
 
@@ -196,17 +179,16 @@ export default function PlansPricing({
       <section>
         <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
           <div className="sm:flex sm:flex-col sm:align-center"></div>
-          <p className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            No subscription pricing plans found. Create them in your{' '}
+          <p className="text-2xl font-extrabold sm:text-center sm:text-3xl">
+            {partyData?.name} has no public offerings yet. Manage your business at{' '}
             <a
               className="text-blue-500 underline"
               href="https://app.vantj.com"
               rel="noopener noreferrer"
               target="_blank"
             >
-              Vantj Dashboard
+              app.vantj.com
             </a>
-            .
           </p>
         </div>
       </section>
@@ -294,46 +276,44 @@ export default function PlansPricing({
             Choose the service or plan that works best for you!
           </p> */}
         {/* Product Category Selector */}
-        <div className="my-3">
-          <div className="sm:hidden">
-            <label htmlFor="tabs" className="sr-only">
-              Select a tab
-            </label>
-            <select
-              id="productCategoryTabs"
-              name="productCategoryTabs"
-              className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
-              value={selectedProductCategory}
-              onChange={(e) => setSelectedProductCategory(e.target.value)}
-            >
-              {productCategories.map((productCategory) => (
-                <option key={productCategory} value={productCategory}>
-                  {productCategory}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="hidden sm:block">
-            <nav className="flex justify-center space-x-12" aria-label="Tabs">
-              {productCategories.map((productCategory) => (
-                <button
-                  key={productCategory}
-                  onClick={() => setSelectedProductCategory(productCategory)}
-                  className={classNames(
-                    productCategory === selectedProductCategory
-                      ? 'border-indigo-500 text-indigo-600'
-                      : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                    'whitespace-nowrap py-4 px-1 border-b-2'
-                  )}
-                >
-                  {productCategory}
-                </button>
-              ))}
-            </nav>
-          </div>
+        <div className="sm:hidden">
+          <label htmlFor="tabs" className="sr-only">
+            Select a tab
+          </label>
+          <select
+            id="productCategoryTabs"
+            name="productCategoryTabs"
+            className="block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 text-base text-gray-800 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
+            value={selectedProductCategory}
+            onChange={(e) => setSelectedProductCategory(e.target.value)}
+          >
+            {productCategories.map((productCategory) => (
+              <option key={productCategory} value={productCategory}>
+                {productCategory}
+              </option>
+            ))}
+          </select>
         </div>
-        <h4 className="text-xl text-center sm:text-2xl">Subscriptions</h4>
-        <div className="relative self-center bg-zinc-900 rounded-lg p-0.5 flex mt-6 sm:mt-8 border border-zinc-800">
+        <div className="hidden sm:block">
+          <nav className="flex justify-center space-x-12" aria-label="Tabs">
+            {productCategories.map((productCategory) => (
+              <button
+                key={productCategory}
+                onClick={() => setSelectedProductCategory(productCategory)}
+                className={classNames(
+                  productCategory === selectedProductCategory
+                    ? 'border-indigo-500 text-indigo-600'
+                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                  'whitespace-nowrap py-4 px-1 border-b-2'
+                )}
+              >
+                {productCategory}
+              </button>
+            ))}
+          </nav>
+        </div>
+        <h4 className="mt-8 mb-6 text-xl text-center sm:text-2xl font-bold">Subscriptions</h4>
+        <div className="relative self-center bg-zinc-900 rounded-lg p-0.5 flex border border-zinc-800">
           {intervals.includes('month') && (
             <button
               onClick={() => setBillingInterval('month')}
@@ -342,7 +322,7 @@ export default function PlansPricing({
                 billingInterval === 'month'
                   ? 'relative w-1/2 bg-gray-50 dark:bg-gray-500 border-gray-800 shadow-sm outline-none ring-2 ring-blue-600 z-10'
                   : 'ml-0.5 relative w-1/2 border border-transparent text-gray-800 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:bg-gray-800'
-              } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap sm:w-auto sm:px-8`}
+              } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap sm:w-auto flex-grow sm:px-8`}
             >
               Monthly Billing
             </button>
@@ -362,7 +342,7 @@ export default function PlansPricing({
           )}
         </div>
       </div>
-      <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
+      <div className="my-3 space-y-4 sm:my-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
         {plans.map((plan) => {
           const categoryIsSelected =
             plan.product_categories.includes(selectedProductCategory) ||
@@ -419,8 +399,8 @@ export default function PlansPricing({
         })}
       </div>
 
-      <h4 className="mt-12 text-2xl text-center sm:text-3xl underline">One Time Services</h4>
-      <div className="mt-6 space-y-4 sm:mt-8 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
+      <h4 className="mt-8 mb-6 text-xl text-center sm:text-2xl font-bold">One Time Services</h4>
+      <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
         {plans.map((plan) => {
           const categoryIsSelected =
             plan.product_categories.includes(selectedProductCategory) ||

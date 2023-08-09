@@ -20,7 +20,7 @@ const LayoutWrapper = ({ children }) => {
     <SectionContainer>
       <RegisterModal open={showRegisterModal} setOpen={setShowRegisterModal} />
       <div className="flex flex-col justify-between">
-        <header className="flex items-center justify-between py-10">
+        <header className="flex items-center justify-between py-6">
           <div>
             <Link href="/" aria-label="Vantj">
               <div className="flex items-center justify-between">
