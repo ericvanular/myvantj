@@ -34,15 +34,13 @@ export default function PlansPricing({
   // const { keycloak } = useKeycloak()
 
   const { data: plansData, error: plansError } = useSWR(
-    session?.accessToken
-      ? [
-          `${process.env.NEXT_PUBLIC_API}/api/company/public_products/${
-            host.split('.')[0]
-          }?page=${pageIndex}`,
-          'GET',
-          session?.accessToken,
-        ]
-      : null,
+    [
+      `${process.env.NEXT_PUBLIC_API}/api/company/public_products/${
+        host.split('.')[0]
+      }?page=${pageIndex}`,
+      'GET',
+      session?.accessToken,
+    ],
     ([url, method, token]) => fetchWithToken(url, method, token)
   )
 

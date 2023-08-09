@@ -34,7 +34,7 @@ export const SiteContext = createContext()
 
 function App({ Component, pageProps: { session, ...pageProps }, cookies }) {
   const { data: partyData, error: partyError } = useSWR(
-    typeof window !== 'undefined' && session?.accessToken
+    typeof window !== 'undefined'
       ? [
           `${process.env.NEXT_PUBLIC_API}/api/company/${window.location.hostname.split('.')[0]}`,
           'GET',
