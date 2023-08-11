@@ -16,8 +16,6 @@ import Image from '@/components/Image'
 import useSWR from 'swr'
 
 import { useSession, signIn, signOut } from 'next-auth/react'
-// import { useKeycloak } from '@react-keycloak-fork/ssr'
-// import { useAuth } from 'react-oidc-context'
 
 export async function getStaticPaths() {
   return {
@@ -28,8 +26,19 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
   const host = context.params.host
-  //const postsData = await API(`${process.env.NEXT_PUBLIC_API}/api/creator/posts/eric`)
-  const profileData = await API(`${process.env.NEXT_PUBLIC_API}/api/company/${host.split('.')[0]}`)
+  const subdomain = host.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
+    ? host.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
+    : null
+  const profileData = await API(
+    `${process.env.NEXT_PUBLIC_API}/api/company?${
+      subdomain ? `subdomain=${subdomain}` : `custom_domain=${host}`
+    }`
+  )
+  // const profileData = await API(`${process.env.NEXT_PUBLIC_API}/api/company/${host.split('.')[0]}`)
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify(data),
+  // })
 
   if (!profileData.result) {
     return {
@@ -45,7 +54,7 @@ export async function getStaticProps(context) {
     props: {
       //posts,
       host,
-      id,
+      orgId: id,
       name,
       description,
       avatar_url,
@@ -55,7 +64,7 @@ export async function getStaticProps(context) {
   }
 }
 
-export default function Home({ host, name, description, avatar_url }) {
+export default function Home({ orgId, host, name, description, avatar_url }) {
   //, banner_url }) {
   const [pageIndex, setPageIndex] = useState(1)
   const [redirect, setRedirect] = useState(false)
@@ -196,6 +205,7 @@ export default function Home({ host, name, description, avatar_url }) {
       <PlansPricing
         pageIndex={pageIndex}
         setPageIndex={setPageIndex}
+        orgId={orgId}
         host={host}
         partyData={partyData}
         setModalMode={setModalMode}

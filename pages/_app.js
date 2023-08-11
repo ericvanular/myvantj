@@ -33,10 +33,17 @@ const oidcConfig = {
 export const SiteContext = createContext()
 
 function App({ Component, pageProps: { session, ...pageProps }, cookies }) {
+  const subdomain =
+    typeof window !== 'undefined' &&
+    window.location.hostname.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
+      ? window.location.hostname.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
+      : null
   const { data: partyData, error: partyError } = useSWR(
     typeof window !== 'undefined'
       ? [
-          `${process.env.NEXT_PUBLIC_API}/api/company/${window.location.hostname.split('.')[0]}`,
+          `${process.env.NEXT_PUBLIC_API}/api/company?${
+            subdomain ? `subdomain=${subdomain}` : `custom_domain=${window.location.hostname}`
+          }`,
           'GET',
           session?.accessToken,
         ]

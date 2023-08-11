@@ -12,6 +12,7 @@ import { getStripe } from '@/lib/utils/stripe-client'
 // import { useRouter } from 'next/navigation';
 
 export default function PlansPricing({
+  orgId,
   host,
   pageIndex,
   setPageIndex,
@@ -28,9 +29,7 @@ export default function PlansPricing({
 
   const { data: plansData, error: plansError } = useSWR(
     [
-      `${process.env.NEXT_PUBLIC_API}/api/company/public_products/${
-        host.split('.')[0]
-      }?page=${pageIndex}`,
+      `${process.env.NEXT_PUBLIC_API}/api/company/public_products/${orgId}?page=${pageIndex}`,
       'GET',
       session?.accessToken,
     ],
