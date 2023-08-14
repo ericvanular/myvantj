@@ -29,11 +29,20 @@ export async function getStaticProps(context) {
   const subdomain = host.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
     ? host.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
     : null
+  console.log('host: ' + host)
+  console.log('subdomain: ' + subdomain)
+  console.log(
+    'API url: ' +
+      `${process.env.NEXT_PUBLIC_API}/api/company?${
+        subdomain ? `subdomain=${subdomain}` : `custom_domain=${host}`
+      }`
+  )
   const profileData = await API(
     `${process.env.NEXT_PUBLIC_API}/api/company?${
       subdomain ? `subdomain=${subdomain}` : `custom_domain=${host}`
     }`
   )
+  console.log(profileData)
   // const profileData = await API(`${process.env.NEXT_PUBLIC_API}/api/company/${host.split('.')[0]}`)
   //   method: 'POST',
   //   headers: { 'Content-Type': 'application/json' },
