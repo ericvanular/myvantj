@@ -164,7 +164,8 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
 
           {description && (
             <p className="font-normal text-gray-500 text-sm sm:text-md lg:text-lg mb-6">
-              {description.substring(0, 273) + '...'}
+              {/* {description.substring(0, 273) + '...'} */}
+              {description}
             </p>
           )}
 
