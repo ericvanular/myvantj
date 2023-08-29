@@ -3,19 +3,19 @@
 
 const DEFAULT_LAYOUT = 'AuthorLayout'
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  }
-}
+// export async function getStaticPaths() {
+//   return {
+//     paths: [],
+//     fallback: 'blocking',
+//   }
+// }
 
 // export async function getStaticProps() {
 // 	const authorDetails = await getFileBySlug('authors', ['default'])
 // 	return { props: { authorDetails } }
 // }
 
-export default function About({ authorDetails }) {
+export default function About({ authorDetails = 'About Page WIP' }) {
   // const { mdxSource, frontMatter } = authorDetails
 
   return (
@@ -24,6 +24,6 @@ export default function About({ authorDetails }) {
     // 	mdxSource={mdxSource}
     // 	frontMatter={frontMatter}
     // />
-    <div>Test</div>
+    <div>{authorDetails}</div>
   )
 }
