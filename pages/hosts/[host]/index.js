@@ -12,8 +12,9 @@ import getCookie from '@/lib/utils/getCookie'
 import { SiteContext } from 'pages/_app'
 import API from '@/lib/api'
 import Image from '@/components/Image'
-
-import useSWR from 'swr'
+import dynamic from 'next/dynamic'
+const ReactMarkdown = dynamic(() => import('react-markdown'), { ssr: false })
+import remarkGfm from 'remark-gfm'
 
 import { useSession, signIn, signOut } from 'next-auth/react'
 
@@ -29,25 +30,19 @@ export async function getStaticProps(context) {
   const subdomain = host.endsWith(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`)
     ? host.replace(`.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`, '')
     : null
-  console.log('host: ' + host)
-  console.log('subdomain: ' + subdomain)
-  console.log(
-    'API url: ' +
-      `${process.env.NEXT_PUBLIC_API}/api/company?${
-        subdomain ? `subdomain=${subdomain}` : `custom_domain=${host}`
-      }`
-  )
+  // console.log('host: ' + host)
+  // console.log('subdomain: ' + subdomain)
+  // console.log(
+  //   'API url: ' +
+  //     `${process.env.NEXT_PUBLIC_API}/api/company?${
+  //       subdomain ? `subdomain=${subdomain}` : `custom_domain=${host}`
+  //     }`
+  // )
   const profileData = await API(
     `${process.env.NEXT_PUBLIC_API}/api/company?${
       subdomain ? `subdomain=${subdomain}` : `custom_domain=${host}`
     }`
   )
-  console.log(profileData)
-  // const profileData = await API(`${process.env.NEXT_PUBLIC_API}/api/company/${host.split('.')[0]}`)
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(data),
-  // })
 
   if (!profileData.result) {
     return {
@@ -55,9 +50,7 @@ export async function getStaticProps(context) {
     }
   }
 
-  // const { id, name, description, avatar_url, banner_url } = profileData.creator
   const { id, name, description, avatar_url } = profileData.org
-  //const { posts } = postsData
 
   return {
     props: {
@@ -74,7 +67,6 @@ export async function getStaticProps(context) {
 }
 
 export default function Home({ orgId, host, name, description, avatar_url }) {
-  //, banner_url }) {
   const [pageIndex, setPageIndex] = useState(1)
   const [redirect, setRedirect] = useState(false)
   const [paymentMethods, setPaymentMethods] = useState([])
@@ -85,8 +77,6 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
 
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated'
-  // const { keycloak } = useKeycloak()
-  // const auth = useAuth()
   const { partyData } = useContext(SiteContext)
 
   // const { data: partyData, error: partyError } = useSWR(
@@ -156,16 +146,15 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
           />
         </div>
       )} */}
-      <header className="flex flex-col lg:flex-row justify-between my-6 lg:min-h-72">
-        <div className="flex flex-col justify-between min-w-[66%] text-center lg:text-left lg:mr-12">
+      <header className="flex flex-col lg:flex-row justify-between w-full my-6 lg:min-h-72">
+        <div className="flex flex-col justify-between text-center lg:text-left">
           <h1 className="font-bold text-gray-800 dark:text-gray-300 text-4xl md:text-6xl xl:text-7xl my-5">
             {name}
           </h1>
-
           {description && (
-            <p className="font-normal text-gray-500 text-sm sm:text-md lg:text-lg mb-6">
+            <p className="font-normal text-sm sm:text-md lg:text-lg prose lg:prose-xl prose-a:text-blue-600 w-100">
               {/* {description.substring(0, 273) + '...'} */}
-              {description}
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
             </p>
           )}
 

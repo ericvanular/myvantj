@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import Cards from 'react-credit-cards'
-import 'react-credit-cards/lib/styles-compiled.css'
+// import Cards from 'react-credit-cards'
+// import 'react-credit-cards/lib/styles-compiled.css'
 import { PaymentInputsWrapper, usePaymentInputs } from 'react-payment-inputs'
 import images from 'react-payment-inputs/images'
 
@@ -52,7 +52,7 @@ export default function PaymentMethodDisplay(props) {
 
   return (
     <div className="flex justify-center items-center" style={{ flexWrap: 'wrap' }}>
-      <Cards
+      {/* <Cards
         cvc={card.cvc}
         expiry={card.expiryDate}
         focused={card.focus}
@@ -60,7 +60,7 @@ export default function PaymentMethodDisplay(props) {
         number={card.cardNumber}
         placeholders={{ name: '' }}
         locale={{ valid: 'expiration' }}
-      />
+      /> */}
       <div className="flex flex-col m-4">
         <PaymentInputsWrapper {...wrapperProps}>
           <svg {...getCardImageProps({ images })} />
