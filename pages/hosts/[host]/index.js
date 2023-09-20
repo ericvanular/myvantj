@@ -62,7 +62,7 @@ export async function getStaticProps(context) {
       avatar_url,
       // banner_url,
     },
-    // revalidate: 10,
+    revalidate: 300,
   }
 }
 
