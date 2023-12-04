@@ -16,7 +16,7 @@ export default function Footer() {
           <SocialIcon kind="twitter" href={siteMetadata.twitter} size="6" />
         </div>
         */}
-        <div className="flex mt-2 mb-8 space-x-2 text-sm text-gray-300 dark:text-gray-700">
+        <div className="flex mt-2 mb-8 space-x-2 text-sm text-gray-800 dark:text-gray-300">
           <Link href="https://vantj.com">Powered by Vantj</Link>
         </div>
       </div>

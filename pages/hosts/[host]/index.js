@@ -146,13 +146,13 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
           />
         </div>
       )} */}
-      <header className="flex flex-col lg:flex-row justify-between w-full my-6 lg:min-h-72">
+      <header className="flex flex-col lg:flex-row justify-between w-full lg:min-h-72">
         <div className="flex flex-col justify-between text-center lg:text-left">
-          <h1 className="font-bold text-gray-800 dark:text-gray-300 text-4xl md:text-6xl xl:text-7xl my-5">
+          <h1 className="font-bold text-gray-800 dark:text-gray-300 text-4xl md:text-6xl xl:text-7xl my-2">
             {name}
           </h1>
           {description && (
-            <p className="font-normal text-sm sm:text-md lg:text-lg prose lg:prose-xl prose-a:text-blue-600 w-100">
+            <p className="font-normal text-gray-800 dark:text-gray-300 text-sm sm:text-md lg:text-lg prose dark:prose-headings:text-gray-300 lg:prose-xl prose-a:text-blue-600 dark:prose-a:text-blue-400 w-100">
               {/* {description.substring(0, 273) + '...'} */}
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
             </p>

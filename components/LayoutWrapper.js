@@ -58,7 +58,7 @@ const LayoutWrapper = ({ children }) => {
               ))}
             </div>
             */}
-            {/* <ThemeSwitch /> */}
+            <ThemeSwitch />
             <Navatar setShowRegisterModal={setShowRegisterModal} />
             {/* <MobileNav /> */}
           </div>

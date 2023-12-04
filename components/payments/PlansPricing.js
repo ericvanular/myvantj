@@ -102,7 +102,7 @@ export default function PlansPricing({
               return (
                 <div
                   key={subscription.agreement_item_id}
-                  className="divide-y rounded-lg shadow-sm divide-zinc-600 bg-zinc-900 border border-zinc-800"
+                  className="divide-y rounded-lg shadow-sm divide-zinc-600 border border-zinc-800 dark:border-zinc-300"
                 >
                   <div className="p-6">
                     <p className="font-extrabold text-3xl text-zinc-300">
@@ -203,8 +203,8 @@ export default function PlansPricing({
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
             Choose the service or plan that works best for you!
           </p>
-          <div className="relative flex self-center mt-12 border rounded-lg bg-zinc-900 border-zinc-800">
-            <div className="border border-pink-500 border-opacity-50 divide-y rounded-lg shadow-sm bg-zinc-900 divide-zinc-600">
+          <div className="relative flex self-center mt-12 border rounded-lg border-zinc-800">
+            <div className="border border-pink-500 border-opacity-50 divide-y rounded-lg shadow-sm divide-zinc-600">
               <div className="p-6 py-2 m-1 text-2xl font-medium rounded-md shadow-sm border-zinc-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8">
                 {plans[0].product.name}
               </div>
@@ -223,7 +223,7 @@ export default function PlansPricing({
               return (
                 <div
                   key={price[1].id}
-                  className="divide-y rounded-lg shadow-sm divide-zinc-600 bg-zinc-900 border border-zinc-800"
+                  className="divide-y rounded-lg shadow-sm divide-zinc-600 border border-zinc-800 dark:border-zinc-300"
                 >
                   <div className="p-6">
                     <p>
@@ -301,8 +301,8 @@ export default function PlansPricing({
                 onClick={() => setSelectedProductCategory(productCategory)}
                 className={classNames(
                   productCategory === selectedProductCategory
-                    ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+                    ? 'border-indigo-500 text-indigo-600 dark:text-indigo-300'
+                    : 'border-transparent text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:border-gray-300',
                   'whitespace-nowrap py-4 px-1 border-b-2'
                 )}
               >
@@ -312,14 +312,14 @@ export default function PlansPricing({
           </nav>
         </div>
         <h4 className="mt-8 mb-6 text-xl text-center sm:text-2xl font-bold">Subscriptions</h4>
-        <div className="relative self-center bg-zinc-900 rounded-lg p-0.5 flex border border-zinc-800">
+        <div className="relative self-center rounded-lg p-0.5 flex border border-zinc-800 dark:border-zinc-300">
           {intervals.includes('month') && (
             <button
               onClick={() => setBillingInterval('month')}
               type="button"
               className={`${
                 billingInterval === 'month'
-                  ? 'relative w-1/2 bg-gray-50 dark:bg-gray-500 border-gray-800 shadow-sm outline-none ring-2 ring-blue-600 z-10'
+                  ? 'relative w-1/2 font-bold bg-gray-100 dark:bg-gray-500 border-gray-800 shadow-sm outline-none ring-2 ring-blue-600 z-10'
                   : 'ml-0.5 relative w-1/2 border border-transparent text-gray-800 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:bg-gray-800'
               } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap sm:w-auto flex-grow sm:px-8`}
             >
@@ -332,7 +332,7 @@ export default function PlansPricing({
               type="button"
               className={`${
                 billingInterval === 'year'
-                  ? 'relative w-1/2 bg-gray-50 dark:bg-gray-500 border-gray-800 shadow-sm outline-none ring-2 ring-blue-600 z-10'
+                  ? 'relative w-1/2 font-bold bg-gray-100 dark:bg-gray-500 border-gray-800 shadow-sm outline-none ring-2 ring-blue-600 z-10'
                   : 'ml-0.5 relative w-1/2 border border-transparent text-gray-800 hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-50 dark:hover:bg-gray-700 dark:hover:bg-gray-800'
               } rounded-md m-1 py-2 text-sm font-medium whitespace-nowrap sm:w-auto sm:px-8`}
             >
@@ -356,16 +356,14 @@ export default function PlansPricing({
           return (
             <div
               key={plan.price_component_id}
-              className="rounded-lg divide-y divide-zinc-600 border border-zinc-800 bg-zinc-900"
+              className="rounded-lg divide-y divide-zinc-600 border border-zinc-800 dark:border-zinc-300"
             >
               <div className="p-6">
                 <h2 className="text-2xl font-semibold leading-6">{plan.product.name}</h2>
-                <p className="mt-4 text-zinc-300">{plan.product.description}</p>
+                <p className="mt-4">{plan.product.description}</p>
                 <p className="mt-8">
                   <span className="text-3xl font-extrabold">{priceString}</span>
-                  <span className="text-base font-medium text-zinc-100 ml-2">
-                    / {billingInterval}
-                  </span>
+                  <span className="text-base font-medium ml-2">/ {billingInterval}</span>
                 </p>
                 <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
                   <button
@@ -414,14 +412,14 @@ export default function PlansPricing({
           return (
             <div
               key={plan.price_component_id}
-              className="rounded-lg divide-y divide-zinc-600 border border-zinc-800 bg-zinc-900"
+              className="rounded-lg divide-y divide-zinc-600 border border-zinc-800 dark:border-zinc-300"
             >
               <div className="p-6">
                 <h2 className="text-2xl font-semibold leading-6">{plan.product.name}</h2>
-                <p className="mt-4 text-zinc-300">{plan.product.description}</p>
+                <p className="mt-4">{plan.product.description}</p>
                 <p className="mt-8">
                   <span className="text-3xl font-extrabold">{priceString}</span>
-                  <span className="text-base font-medium text-zinc-100 ml-2">One Time</span>
+                  <span className="text-base font-medium ml-2">One Time</span>
                 </p>
                 <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
                   <button
