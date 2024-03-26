@@ -6,6 +6,7 @@ import useSWR from 'swr'
 import fetchWithToken from '@/lib/utils/fetchWithToken'
 
 import { useSession, signIn, signOut, getSession } from 'next-auth/react'
+import Link from 'next/link'
 
 const logOutKeycloak = async () => {
   const response = await fetch('/api/auth/logOutKeycloak', {
@@ -90,6 +91,21 @@ const Navatar = (props) => {
               </div>
             )}
           </Menu.Item>
+          {authenticated && (
+            <Menu.Item>
+              {({ active }) => (
+                <Link
+                  href="/profile"
+                  className={classNames(
+                    active ? 'bg-gray-100' : '',
+                    'flex justify-center block px-4 py-2 text-sm text-gray-700 cursor-pointer w-full'
+                  )}
+                >
+                  Profile
+                </Link>
+              )}
+            </Menu.Item>
+          )}
           <Menu.Item>
             {({ active }) =>
               authenticated ? (

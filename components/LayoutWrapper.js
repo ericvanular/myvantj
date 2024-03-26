@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { SiteContext } from 'pages/_app'
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
 import Logo from '@/data/logo.svg'
@@ -9,38 +10,35 @@ import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
 import Navatar from './Navatar'
 import RegisterModal from './RegisterModal'
-
-import { useRouter } from 'next/router'
+import { HomeIcon } from '@heroicons/react/24/outline'
 
 const LayoutWrapper = ({ children }) => {
   const [showRegisterModal, setShowRegisterModal] = useState(false)
-  const router = useRouter()
+  const { partyData } = useContext(SiteContext)
 
   return (
     <SectionContainer>
       <RegisterModal open={showRegisterModal} setOpen={setShowRegisterModal} />
-      <div className="flex flex-col justify-between">
+      <div className="h-screen flex flex-col">
         <header className="flex items-center justify-between py-6">
           <div>
             <Link href="/" aria-label="Vantj">
               <div className="flex items-center justify-between">
-                <div className="mr-3">
-                  {/* data?.creator?.banner_url ? (
+                <HomeIcon className="h-8 w-8" />
+                {/* { partyData?.avatar_url &&
+                  <div className="mr-3">
                     <img
-                      className="hidden sm:block h-20 w-48 shadow-lg rounded object-cover object-center"
-                      src={data?.creator?.banner_url}
-                      alt={data?.creator?.username}
+                      className="h-12 w-12 rounded-full object-cover object-center"
+                      src={partyData.avatar_url}
+                      alt={partyData.name}
                     />
-                  ) : ( 
-                  */}
-                </div>
-                {router?.query?.host ? (
-                  <div className="hidden md:block text-lg sm:text-2xl font-semibold dark:text-gray-100 text-indigo-900 hover:text-black">
-                    {/* {router?.query.host} */}
                   </div>
-                ) : (
-                  siteMetadata.headerTitle
-                )}
+                }
+                { partyData?.domain &&
+                  <div className="hidden md:block text-lg sm:text-xl font-semibold dark:text-gray-100 text-indigo-900 hover:text-black">
+                    {partyData?.domain}
+                  </div>
+                } */}
               </div>
             </Link>
           </div>

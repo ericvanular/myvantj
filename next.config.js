@@ -133,6 +133,16 @@ module.exports = withBundleAnalyzer({
               value: '(?<host>.*)',
             },
           ],
+          source: '/profile/edit',
+          destination: '/hosts/:host/profile/edit',
+        },
+        {
+          has: [
+            {
+              type: 'host',
+              value: '(?<host>.*)',
+            },
+          ],
           source: '/about',
           destination: '/hosts/:host/about',
         },

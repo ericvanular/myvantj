@@ -3,12 +3,20 @@ import API from '@/lib/api'
 import formatDate from '@/lib/utils/formatDate'
 import fetchWithToken from '@/lib/utils/fetchWithToken'
 import generateFileUrl from '@/lib/utils/generateFileUrl'
+import {
+  validateEmail,
+  validatePhoneNumber,
+  formatPhoneNumber,
+  validateAddress,
+} from '@/lib/utils/utilsFunctions'
 import useSWR from 'swr'
 import { useSession, signIn, signOut } from 'next-auth/react'
 import { SiteContext } from 'pages/_app'
+import { InformationCircleIcon } from '@heroicons/react/24/outline'
 
 // import Button from '@/components/ui/Button';
 import { getStripe } from '@/lib/utils/stripe-client'
+import Link from 'next/link'
 // import { useRouter } from 'next/navigation';
 
 export default function PlansPricing({
@@ -26,6 +34,11 @@ export default function PlansPricing({
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated'
   const { partyData } = useContext(SiteContext)
+
+  const { data: userData, error: userError } = useSWR(
+    [`${process.env.NEXT_PUBLIC_API}/api/user/profile`, 'GET', session?.accessToken],
+    ([url, method, token]) => fetchWithToken(url, method, token)
+  )
 
   const { data: plansData, error: plansError } = useSWR(
     [
@@ -67,6 +80,29 @@ export default function PlansPricing({
     }
   }
 
+  const profileValidation = {
+    person_name: !!(userData?.user.fname && userData?.user.fname),
+    // company_name: companyView ? !!user?.name : true,
+    emails:
+      userData?.emails.length > 1
+        ? userData?.emails.map((email) => validateEmail(email.email))
+        : userData?.emails[0]?.email
+        ? [validateEmail(userData?.emails[0].email)]
+        : [false],
+    phones:
+      userData?.phones.length > 1
+        ? userData?.phones.map((phone) => validatePhoneNumber(phone.number))
+        : userData?.phones[0]?.number
+        ? [validatePhoneNumber(userData?.phones[0].number)]
+        : [false],
+    addresses:
+      userData?.addresses.length > 1
+        ? userData?.addresses.map((address) => validateAddress(address))
+        : userData?.addresses[0]
+        ? [validateAddress(userData?.addresses[0])]
+        : [false],
+  }
+
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
@@ -76,101 +112,140 @@ export default function PlansPricing({
     !subscriptions.find((subscription) => subscription.agreement_status_description === 'Canceled')
   )
     return (
-      <div className="max-w-6xl px-4 py-8 mx-auto sm:py-24 sm:px-6 lg:px-8">
-        <div className="sm:flex sm:flex-col sm:align-center">
-          <h1 className="text-4xl font-extrabold sm:text-center sm:text-6xl">Your Active Plan</h1>
-          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            Details on your current subscription plan.
-          </p>
-          {/* <div className="relative flex self-center mt-12 border rounded-lg bg-zinc-900 border-zinc-800">
-              <div className="border border-pink-500 border-opacity-50 divide-y rounded-lg shadow-sm bg-zinc-900 divide-zinc-600">
-                <div className="p-6 py-2 m-1 text-2xl font-medium rounded-md shadow-sm border-zinc-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8">
-                  {subscriptions.product.name}
+      <>
+        {!(
+          profileValidation.person_name &&
+          profileValidation.emails.every(Boolean) &&
+          profileValidation.phones.every(Boolean) &&
+          profileValidation.addresses.every(Boolean)
+        ) && (
+          <Link href="/profile/edit">
+            <div className="rounded-md bg-yellow-100 dark:bg-blue-600 p-4 hover:bg-yellow-200 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+              <div className="flex">
+                <div className="flex-shrink-0">
+                  <InformationCircleIcon className="h-5 w-5" aria-hidden="true" />
                 </div>
-              </div>
-            </div> */}
-          <div className="mt-6 space-y-4 sm:mt-12 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
-            {subscriptions.map((subscription) => {
-              const priceString =
-                subscription.price_component_price &&
-                new Intl.NumberFormat('en-US', {
-                  style: 'currency',
-                  currency: 'USD', // price.currency,
-                  minimumFractionDigits: 0,
-                }).format(subscription.price_component_price)
-
-              return (
-                <div
-                  key={subscription.agreement_item_id}
-                  className="divide-y rounded-lg shadow-sm divide-zinc-600 border border-zinc-800 dark:border-zinc-300"
-                >
-                  <div className="p-6">
-                    <p className="font-extrabold text-3xl text-zinc-300">
-                      {subscription.product_name}
-                    </p>
-                    <p>
-                      <span className="mt-4 text-xl white">{priceString}</span>
-                      <span className="text-xl font-medium text-zinc-100">
-                        /{subscription.uom_abbreviation}
-                      </span>
-                    </p>
-                    {/* <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
-                        <button
-                          className="flex items-center justify-center border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
-                          onClick={() => handleCheckout(price[0].id)}
-                        >
-                          <div className="mx-3">
-                            Change Plan
-                          </div>
-                        </button>
-                      </div> */}
-                    {/* <div className="flex items-center justify-end pt-6 border-solid border-blueGray-200 rounded-b">
-                        <button
-                          className="flex items-center justify-center border-solid w-full rounded-full bg-yellow-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-yellow-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
-                          onClick={() => {
-                            setAgreementItemId(subscription.agreement_item_id)
-                            setModalMode('pause')
-                            setShowPaymentsModal(true)
-                            
-                          }}
-                        >
-                          <div className="mx-3">
-                            Pause
-                          </div>
-                        </button>
-                      </div> */}
-                    <div className="flex items-center justify-end pt-6 border-solid border-blueGray-200 rounded-b">
-                      <button
-                        className="flex items-center justify-center border-solid w-full rounded-full bg-red-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-red-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
-                        onClick={() => {
-                          setAgreementItemId(subscription.agreement_item_id)
-                          setModalMode('cancel')
-                          setShowPaymentsModal(true)
-                        }}
-                      >
-                        <div className="mx-3">Cancel</div>
-                      </button>
+                <div className="ml-3 flex-1 flex justify-between">
+                  <div className="flex flex-col">
+                    <h3 className="text-sm font-bold">Please complete your profile details.</h3>
+                    <div className="mt-1 text-xs">
+                      <ul role="list" className="list-disc space-y-1 pl-5">
+                        {!profileValidation.person_name && <li>Your name has not been added.</li>}
+                        {!profileValidation.phones.every(Boolean) && (
+                          <li>A valid phone number has not been added.</li>
+                        )}
+                        {!profileValidation.addresses.every(Boolean) && (
+                          <li>A valid & complete address has not been added.</li>
+                        )}
+                      </ul>
                     </div>
-                    {/* <button
-                        variant="slim"
-                        type="button"
-                        disabled={false}
-                        loading={priceIdLoading === price.id}
-                        onClick={() => handleCheckout(price)}
-                        className="block w-full py-2 mt-12 text-sm font-semibold text-center text-white rounded-md hover:bg-zinc-900 "
-                      >
-                        {plans[0].name ===
-                        subscription?.prices?.plans?.name
-                          ? 'Manage'
-                          : 'Subscribe'}
-                      </Button> */}
+                  </div>
+                  <div className="text-sm flex flex-col justify-center align-items">
+                    <div className="whitespace-nowrap text-xl font-medium">
+                      <span aria-hidden="true"> &rarr;</span>
+                    </div>
                   </div>
                 </div>
-              )
-            })}
+              </div>
+            </div>
+          </Link>
+        )}
+        <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 lg:px-8">
+          <div className="sm:flex sm:flex-col sm:align-center">
+            <h1 className="text-2xl font-extrabold sm:text-center sm:text-5xl">Your Active Plan</h1>
+            <p className="max-w-2xl m-auto mt-5 text-md sm:text-center sm:text-xl">
+              Details on your current subscription plan.
+            </p>
+            {/* <div className="relative flex self-center mt-12 border rounded-lg bg-zinc-900 border-zinc-800">
+                <div className="border border-pink-500 border-opacity-50 divide-y rounded-lg shadow-sm bg-zinc-900 divide-zinc-600">
+                  <div className="p-6 py-2 m-1 text-2xl font-medium rounded-md shadow-sm border-zinc-800 whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 focus:z-10 sm:w-auto sm:px-8">
+                    {subscriptions.product.name}
+                  </div>
+                </div>
+              </div> */}
+            <div className="mt-6 space-y-4 sm:mt-12 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-3">
+              {subscriptions.map((subscription) => {
+                const priceString =
+                  subscription.price_component_price &&
+                  new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD', // price.currency,
+                    minimumFractionDigits: 0,
+                  }).format(subscription.price_component_price)
+
+                return (
+                  <div
+                    key={subscription.agreement_item_id}
+                    className="divide-y rounded-lg shadow-sm divide-gray-600 border border-gray-800 dark:border-gray-300"
+                  >
+                    <div className="p-6">
+                      <p className="font-extrabold text-2xl sm:text-3xl">
+                        {subscription.product_name}
+                      </p>
+                      <p>
+                        <span className="mt-4 text-xl white">{priceString}</span>
+                        <span className="text-xl font-medium">
+                          /{subscription.uom_abbreviation}
+                        </span>
+                      </p>
+                      {/* <div className="flex items-center justify-end pt-6 border-t border-solid border-blueGray-200 rounded-b">
+                          <button
+                            className="flex items-center justify-center border-solid w-full rounded-full bg-indigo-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-indigo-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
+                            onClick={() => handleCheckout(price[0].id)}
+                          >
+                            <div className="mx-3">
+                              Change Plan
+                            </div>
+                          </button>
+                        </div> */}
+                      {/* <div className="flex items-center justify-end pt-6 border-solid border-blueGray-200 rounded-b">
+                          <button
+                            className="flex items-center justify-center border-solid w-full rounded-full bg-yellow-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-yellow-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
+                            onClick={() => {
+                              setAgreementItemId(subscription.agreement_item_id)
+                              setModalMode('pause')
+                              setShowPaymentsModal(true)
+                              
+                            }}
+                          >
+                            <div className="mx-3">
+                              Pause
+                            </div>
+                          </button>
+                        </div> */}
+                      <div className="flex items-center justify-end pt-6 border-solid border-blueGray-200 rounded-b">
+                        <button
+                          className="flex items-center justify-center border-solid w-full rounded-full bg-red-50 flex text-gray-800 background-transparent font-semibold uppercase px-6 py-2 text-md border border-2 hover:bg-red-700 hover:text-white outline-none focus:outline-none mx-1 ease-linear transition-all duration-150"
+                          onClick={() => {
+                            setAgreementItemId(subscription.agreement_item_id)
+                            setModalMode('cancel')
+                            setShowPaymentsModal(true)
+                          }}
+                        >
+                          <div className="mx-3">Cancel</div>
+                        </button>
+                      </div>
+                      {/* <button
+                          variant="slim"
+                          type="button"
+                          disabled={false}
+                          loading={priceIdLoading === price.id}
+                          onClick={() => handleCheckout(price)}
+                          className="block w-full py-2 mt-12 text-sm font-semibold text-center text-white rounded-md hover:bg-zinc-900 "
+                        >
+                          {plans[0].name ===
+                          subscription?.prices?.plans?.name
+                            ? 'Manage'
+                            : 'Subscribe'}
+                        </Button> */}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      </>
     )
 
   if (!plans?.length)

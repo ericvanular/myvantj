@@ -106,6 +106,7 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
         open={showPaymentsModal}
         setOpen={setShowPaymentsModal}
         name={name}
+        orgId={orgId}
         host={host}
         pageIndex={pageIndex}
         // partyData={partyData}
@@ -177,21 +178,6 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
 
           {/* <span className="font-normal text-gray-500 text-sm">I am currently open for part-time work.</span> */}
         </div>
-        {avatar_url && (
-          <img
-            className="hidden lg:block rounded object-cover object-center"
-            src={avatar_url}
-            alt={avatar_url}
-          />
-          // <div className="flex items-center w-11/12 relative mx-auto lg:mx-0">
-          //   <Image
-          //     src={avatar_url}
-          //     layout="fill"
-          //     alt={name}
-          //     className="rounded-lg object-cover object-top h-full"
-          //   />
-          // </div>
-        )}
       </header>
       <hr className="text-pink-500 m-5 md:mx-0" />
       {/* <PostGrid

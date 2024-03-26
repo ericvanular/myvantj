@@ -97,6 +97,7 @@ const AlreadyFollowing = ({ creator }) => (
 export default function PaymentsModal({
   mode,
   setMode,
+  orgId,
   host,
   pageIndex,
   open,
@@ -195,11 +196,7 @@ export default function PaymentsModal({
     )
     if (response.id) {
       setMode('canceled')
-      mutate(
-        `${process.env.NEXT_PUBLIC_API}/api/company/public_products/${
-          host.split('.')[0]
-        }?page=${pageIndex}`
-      )
+      mutate()
       setTimeout(() => resetModalStatus(), 2000)
       // setCharge(response.data)
     } else {
@@ -257,13 +254,13 @@ export default function PaymentsModal({
             ) : mode === 'canceled' ? (
               <div className="flex justify-center items-center flex-col">
                 <h2 className="mb-2 dark:text-gray-900">
-                  You succesfully canceled your subscription with {name}.
+                  You successfully canceled your subscription with {name}.
                 </h2>
               </div>
             ) : mode === 'paused' ? (
               <div className="flex justify-center items-center flex-col">
                 <h2 className="mb-2 dark:text-gray-900">
-                  You succesfully paused your subscription with {name}.
+                  You successfully paused your subscription with {name}.
                 </h2>
               </div>
             ) : mode === 'processing' ? (
