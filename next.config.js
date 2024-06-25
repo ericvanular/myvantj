@@ -143,6 +143,26 @@ module.exports = withBundleAnalyzer({
               value: '(?<host>.*)',
             },
           ],
+          source: '/subscriptions',
+          destination: '/hosts/:host/subscriptions',
+        },
+        {
+          has: [
+            {
+              type: 'host',
+              value: '(?<host>.*)',
+            },
+          ],
+          source: '/subscriptions/:id*',
+          destination: '/hosts/:host/subscriptions/:id*',
+        },
+        {
+          has: [
+            {
+              type: 'host',
+              value: '(?<host>.*)',
+            },
+          ],
           source: '/about',
           destination: '/hosts/:host/about',
         },

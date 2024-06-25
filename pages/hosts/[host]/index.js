@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useContext } from 'react'
 import Link from '@/components/Link'
 import fetchWithToken from '@/lib/utils/fetchWithToken'
 import { PageSEO } from '@/components/SEO'
-import PostGrid from '@/components/PostGrid'
 import PlansPricing from '@/components/payments/PlansPricing'
 import FollowModal from '@/components/FollowModal'
 import TipModal from '@/components/TipModal'
@@ -70,10 +69,6 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
   const [pageIndex, setPageIndex] = useState(1)
   const [redirect, setRedirect] = useState(false)
   const [paymentMethods, setPaymentMethods] = useState([])
-  const [showTipModal, setShowTipModal] = useState(false)
-  const [showPaymentsModal, setShowPaymentsModal] = useState(false)
-  const [modalMode, setModalMode] = useState('')
-  const [agreementItemId, setAgreementItemId] = useState('')
 
   const { data: session, status } = useSession()
   const authenticated = status === 'authenticated'
@@ -102,7 +97,7 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
   return (
     <>
       <PageSEO title={host} description={siteMetadata.description} />
-      <PaymentsModal
+      {/* <PaymentsModal
         open={showPaymentsModal}
         setOpen={setShowPaymentsModal}
         name={name}
@@ -117,7 +112,7 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
         mode={modalMode}
         setMode={setModalMode}
         agreementItemId={agreementItemId}
-      />
+      /> */}
       {/* <FollowModal
         open={showFollowModal}
         setOpen={setShowFollowModal}
@@ -187,16 +182,7 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
         creatorId={id}
         setShow={setShowFollowModal}
       /> */}
-      <PlansPricing
-        pageIndex={pageIndex}
-        setPageIndex={setPageIndex}
-        orgId={orgId}
-        host={host}
-        partyData={partyData}
-        setModalMode={setModalMode}
-        setShowPaymentsModal={setShowPaymentsModal}
-        setAgreementItemId={setAgreementItemId}
-      />
+      <PlansPricing />
     </>
   )
 }

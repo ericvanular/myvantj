@@ -92,19 +92,34 @@ const Navatar = (props) => {
             )}
           </Menu.Item>
           {authenticated && (
-            <Menu.Item>
-              {({ active }) => (
-                <Link
-                  href="/profile"
-                  className={classNames(
-                    active ? 'bg-gray-100' : '',
-                    'flex justify-center block px-4 py-2 text-sm text-gray-700 cursor-pointer w-full'
-                  )}
-                >
-                  Profile
-                </Link>
-              )}
-            </Menu.Item>
+            <>
+              <Menu.Item>
+                {({ active }) => (
+                  <Link
+                    href="/profile"
+                    className={classNames(
+                      active ? 'bg-gray-100' : '',
+                      'flex justify-center block px-4 py-2 text-sm text-gray-700 cursor-pointer w-full'
+                    )}
+                  >
+                    Profile
+                  </Link>
+                )}
+              </Menu.Item>
+              <Menu.Item>
+                {({ active }) => (
+                  <Link
+                    href="/subscriptions"
+                    className={classNames(
+                      active ? 'bg-gray-100' : '',
+                      'flex justify-center block px-4 py-2 text-sm text-gray-700 cursor-pointer w-full'
+                    )}
+                  >
+                    Subscriptions
+                  </Link>
+                )}
+              </Menu.Item>
+            </>
           )}
           <Menu.Item>
             {({ active }) =>
