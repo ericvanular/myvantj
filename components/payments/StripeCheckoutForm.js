@@ -41,20 +41,26 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
 
     // Create the clientSecret
     const response = await fetchWithToken(
-      `${process.env.NEXT_PUBLIC_API}/api/payment/create_external_subscription`,
+      `${process.env.NEXT_PUBLIC_API}/api/payment/${
+        mode === 'payment' ? 'create_external_payment_intent' : 'create_external_subscription'
+      }`,
       'POST',
       session?.accessToken,
       { priceId: selectedPrice.price_component_id, mode }
     )
-    const clientSecret = response.latest_invoice?.payment_intent?.client_secret
+    const clientSecret =
+      mode === 'payment'
+        ? response.client_secret
+        : response.latest_invoice?.payment_intent?.client_secret
 
     // Confirm the Intent using the details collected by the Payment Element
     const { error } = await stripe.confirmPayment({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: window.location + 'subscriptions', // direct to the exact purchase ID details
+        return_url: `${window.location}${mode === 'subscription' && 'subscriptions'}`, // direct to the exact purchase ID details
       },
+      redirect: mode === 'subscription' ? 'always' : 'if_required',
     })
 
     if (error) {
@@ -62,6 +68,8 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
       // Show the error to your customer (for example, "payment details incomplete").
       handleError(error)
     } else {
+      setMode('paid')
+
       // Your customer is redirected to your `return_url`. For some payment
       // methods like iDEAL, your customer is redirected to an intermediate
       // site first to authorize the payment, then redirected to the `return_url`.
@@ -71,7 +79,14 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
   return (
     <>
       <form className="space-y-6" onSubmit={handleSubmit}>
-        <PaymentElement />
+        <div hidden={loading}>
+          <PaymentElement />
+        </div>
+        {loading && (
+          <div className="flex justify-center items-center">
+            <Cog8ToothIcon className="animate-spin h-20 w-20" aria-hidden="true" />
+          </div>
+        )}
         <button
           type="submit"
           disabled={!stripe || loading}
@@ -80,7 +95,7 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
           <span className="absolute left-0 inset-y-0 flex items-center pl-3">
             {loading ? (
               <Cog8ToothIcon
-                className="h-5 w-5 text-indigo-400 group-hover:text-indigo-300"
+                className="animate-spin h-5 w-5 text-indigo-400 group-hover:text-indigo-300"
                 aria-hidden="true"
               />
             ) : (

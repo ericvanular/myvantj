@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useCallback, useContext } from 'react'
 import Modal from '../Modal'
 import API from '@/lib/api'
 import fetchWithToken from '@/lib/utils/fetchWithToken'
@@ -113,10 +113,26 @@ export default function StripePaymentsModal({ open, setOpen, selectedPrice }) {
   //   // appearance: {/*...*/},
   // }
 
+  const [discountedAmount, setDiscountedAmount] = useState(null)
+
+  const handleDiscountCode = useCallback(async (code) => {
+    // On the server, validate that the discount code is valid and return the new amount
+    const { newAmount } = await fetch('/apply-discount', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code }),
+    })
+
+    // Trigger a state change that re-renders the Elements provider with the new amount
+    setDiscountedAmount(newAmount)
+  }, [])
+
   const options = {
     mode: selectedPrice?.uom_abbreviation === 'each' ? 'payment' : 'subscription',
     currency: 'usd',
-    amount: Math.round((Math.abs(selectedPrice?.price_component_price) / 100) * 10000),
+    amount:
+      discountedAmount ||
+      Math.round((Math.abs(selectedPrice?.price_component_price) / 100) * 10000),
     // Fully customizable with appearance API.
     appearance: {
       /*...*/
@@ -198,7 +214,7 @@ export default function StripePaymentsModal({ open, setOpen, selectedPrice }) {
 
   const resetModalStatus = () => {
     setOpen(false)
-    // setMode('')
+    setMode('checkoutStripe')
   }
 
   const modalHeader = (mode) => {
@@ -211,6 +227,8 @@ export default function StripePaymentsModal({ open, setOpen, selectedPrice }) {
         return 'Pause Subscription?'
       case 'paused':
         return 'Subscription Paused!'
+      case 'paid':
+        return 'Payment Successful!'
       default:
         return `Confirm Payment`
     }
@@ -271,14 +289,7 @@ export default function StripePaymentsModal({ open, setOpen, selectedPrice }) {
               </div>
             ) : mode === 'paid' ? (
               <div className="flex justify-center items-center flex-col">
-                <Image
-                  src={'/static/images/wallet.png'}
-                  width="100px"
-                  height="100px"
-                  alt="wallet"
-                  className="p-3"
-                />
-                <h2 className="m-4 text-xl">Payment successful!</h2>
+                <h2 className="m-4 text-xl">Your payment was made successfully! Thank you</h2>
               </div>
             ) : mode[0] === 'failure' ? (
               <ErrorComponent
@@ -319,7 +330,11 @@ export default function StripePaymentsModal({ open, setOpen, selectedPrice }) {
                   </div>
                 </div>
                 <Elements stripe={stripePromise} options={options}>
-                  <StripeCheckoutForm selectedPrice={selectedPrice} setMode={setMode} />
+                  <StripeCheckoutForm
+                    selectedPrice={selectedPrice}
+                    setMode={setMode}
+                    onDiscountCode={handleDiscountCode}
+                  />
                 </Elements>
               </>
             ) : plan ? (
