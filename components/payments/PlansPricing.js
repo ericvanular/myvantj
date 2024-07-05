@@ -63,11 +63,13 @@ export default function PlansPricing() {
   return (
     <div className="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
       <div className="sm:flex sm:flex-col sm:align-center">
-        <StripePaymentsModal
-          open={showPaymentModal}
-          setOpen={setShowPaymentModal}
-          selectedPrice={selectedPrice}
-        />
+        {showPaymentModal && (
+          <StripePaymentsModal
+            open={showPaymentModal}
+            setOpen={setShowPaymentModal}
+            selectedPrice={selectedPrice}
+          />
+        )}
         {/* <h1 className="text-4xl font-extrabold sm:text-center sm:text-6xl mb-6">Products & Services</h1> */}
         {/* <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
             Choose the service or plan that works best for you!

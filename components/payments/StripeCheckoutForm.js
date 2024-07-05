@@ -4,7 +4,13 @@ import { useSession } from 'next-auth/react'
 import fetchWithToken from '@/lib/utils/fetchWithToken'
 import { Cog8ToothIcon, LockClosedIcon } from '@heroicons/react/24/outline'
 
-const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
+const StripeCheckoutForm = ({
+  selectedPrice,
+  setMode,
+  discountedAmount,
+  setDiscountedAmount,
+  onDiscountCode,
+}) => {
   const { data: session, status } = useSession()
   const stripe = useStripe()
   const elements = useElements()
@@ -13,6 +19,7 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
 
   const [errorMessage, setErrorMessage] = useState()
   const [loading, setLoading] = useState(false)
+  const [promoCode, setPromoCode] = useState('')
 
   const handleError = (error) => {
     setLoading(false)
@@ -46,12 +53,15 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
       }`,
       'POST',
       session?.accessToken,
-      { priceId: selectedPrice.price_component_id, mode }
+      {
+        priceId: selectedPrice.price_component_id,
+        ...(discountedAmount && { promoCode }),
+      }
     )
     const clientSecret =
       mode === 'payment'
-        ? response.client_secret
-        : response.latest_invoice?.payment_intent?.client_secret
+        ? response.payment_intent?.client_secret
+        : response.subscription?.latest_invoice?.payment_intent?.client_secret
 
     // Confirm the Intent using the details collected by the Payment Element
     const { error } = await stripe.confirmPayment({
@@ -76,8 +86,56 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
     }
   }
 
+  const resetPromo = () => {
+    setDiscountedAmount(null)
+    setPromoCode('')
+  }
+
   return (
     <>
+      {mode === 'subscription' && (
+        <div className="flex-col mb-4 dark:text-gray-900" hidden={loading}>
+          <label htmlFor="discount-code" className="text-sm">
+            Promo Code
+          </label>
+          <div className="mt-1 flex space-x-4">
+            {discountedAmount ? (
+              <span className="inline-flex items-center rounded-full bg-green-100 py-0.5 pl-2.5 pr-1 text-sm font-medium text-green-700">
+                {promoCode}
+                <button
+                  type="button"
+                  className="ml-0.5 inline-flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-gray-400 hover:bg-gray-200 hover:text-gray-500 focus:bg-gray-500 focus:text-white focus:outline-none"
+                  onClick={resetPromo}
+                >
+                  <span className="sr-only">Remove discount code</span>
+                  <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                    <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                  </svg>
+                </button>
+              </span>
+            ) : (
+              <>
+                <input
+                  type="text"
+                  id="discount-code"
+                  name="discount-code"
+                  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="rounded-md bg-gray-200 px-4 text-sm font-medium text-gray-600 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+                  disabled={loading}
+                  onClick={() => onDiscountCode(promoCode, selectedPrice.price_component_id)}
+                >
+                  Apply
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      )}
       <form className="space-y-6" onSubmit={handleSubmit}>
         <div hidden={loading}>
           <PaymentElement />
@@ -108,7 +166,7 @@ const StripeCheckoutForm = ({ selectedPrice, setMode }) => {
           {loading ? 'Processing...' : 'Confirm Payment'}
         </button>
       </form>
-      {errorMessage && <div>{errorMessage}</div>}
+      {errorMessage && <div className="mt-2 font-bold text-red-800">{errorMessage}</div>}
     </>
   )
 }
