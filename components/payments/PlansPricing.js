@@ -15,7 +15,7 @@ export default function PlansPricing() {
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [pageIndex, setPageIndex] = useState(1)
   const [billingInterval, setBillingInterval] = useState('month')
-  const [selectedProductCategory, setSelectedProductCategory] = useState('All')
+  const [selectedProductCategory, setSelectedProductCategory] = useState('1 Pet Plans') // useState('All')
   const [selectedPrice, setSelectedPrice] = useState(null)
 
   const { data: session, status } = useSession()
@@ -37,8 +37,8 @@ export default function PlansPricing() {
 
   const intervals = Array.from(new Set(plans?.flatMap((plan) => plan.uom_abbreviation)))
   const productCategories = Array.from(
-    new Set(plans?.flatMap((plan) => plan.product_categories)).add('All')
-  ).reverse()
+    new Set(plans?.flatMap((plan) => plan.product_categories)) //.add('All')
+  ).sort()
 
   if (!plans?.length)
     return (
@@ -162,6 +162,9 @@ export default function PlansPricing() {
                 <h2 className="text-2xl font-semibold leading-6">{plan.product.name}</h2>
                 <p className="mt-4">{plan.product.description}</p>
                 <p className="mt-8">
+                  {plan.price_component_comment && (
+                    <p className="italic">{plan.price_component_comment}</p>
+                  )}
                   <span className="text-3xl font-extrabold">{priceString}</span>
                   <span className="text-base font-medium ml-2">/ {billingInterval}</span>
                 </p>
