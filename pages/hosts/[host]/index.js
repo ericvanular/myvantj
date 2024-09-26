@@ -132,23 +132,31 @@ export default function Home({ orgId, host, name, description, avatar_url }) {
         paymentMethods={paymentMethodsData?.payment_methods}
         getPaymentMethods={getPaymentMethods}
       /> */}
-      {/* {banner_url && (
-        <div className="h-60 lg:hidden flex items-center w-11/12 relative mx-auto lg:mx-0">
-          <Image
-            src={banner_url}
-            layout="fill"
-            alt={name}
-            className="rounded-lg object-cover object-center"
-          />
-        </div>
+
+      {/* {avatar_url && (
+        <Image
+          className="h-16 w-16 rounded-full ring-2 ring-gray-700 object-cover"
+          src={avatar_url}
+          alt=""
+        />
       )} */}
-      <header className="flex flex-col lg:flex-row justify-between w-full lg:min-h-72">
-        <div className="flex flex-col justify-between text-center lg:text-left">
+      <header className="flex flex-col lg:flex-row justify-between w-full">
+        <div className="flex flex-col justify-between w-full text-center lg:text-left">
+          {avatar_url && (
+            <div className="h-24 w-24 lg:h-32 lg:w-32 rounded-full flex items-center relative mx-auto ring-2 ring-gray-700">
+              <Image
+                src={avatar_url}
+                layout="fill"
+                alt={name}
+                className="rounded-full object-cover object-center"
+              />
+            </div>
+          )}
           <h1 className="font-bold text-gray-800 dark:text-gray-300 text-4xl md:text-6xl xl:text-7xl my-2">
             {name}
           </h1>
           {description && (
-            <p className="font-normal text-gray-800 dark:text-gray-300 text-sm sm:text-md lg:text-lg prose dark:prose-headings:text-gray-300 lg:prose-xl prose-a:text-blue-600 dark:prose-a:text-blue-400 w-100">
+            <p className="font-normal text-gray-800 dark:text-gray-300 text-sm sm:text-md lg:text-lg prose dark:prose-headings:text-gray-300 lg:prose-xl prose-a:text-blue-600 dark:prose-a:text-blue-400">
               {/* {description.substring(0, 273) + '...'} */}
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{description}</ReactMarkdown>
             </p>
